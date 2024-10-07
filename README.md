@@ -19,3 +19,7 @@ https://miro.com/app/dashboard/
 ### PREGUNTAS A REUNIONES
 
 https://docs.google.com/document/d/1fWHyXLsGR0w9Z5MHpzYVXDbQqfRU-HtTokB-ft6UnmQ/edit
+
+### MINUTAS Y GRABACIONES
+
+https://drive.google.com/drive/folders/1eaLCwD-zos2RKQ3WIgxafb-3jXitogM-
