@@ -14,7 +14,7 @@ https://miro.com/app/dashboard/
 
 ### Matriz de trazabilidad
 
-[https://docs.google.com/spreadsheets/d/1heO1na7-6TiDQtrChd8g6pZn7XyOSUNp8eLJ4cBkuZQ/edit?usp=sharing](https://docs.google.com/spreadsheets/d/1heO1na7-6TiDQtrChd8g6pZn7XyOSUNp8eLJ4cBkuZQ/edit?usp=sharing)
+https://docs.google.com/spreadsheets/d/1ax92Ep_RIR8HnK_ahg7qNUsCCQhE37uvqp9gydN7G0s/edit?usp=sharing
 
 ### PREGUNTAS A REUNIONES
 
