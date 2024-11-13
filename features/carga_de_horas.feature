@@ -2,17 +2,16 @@ Feature: Load hours
 
     Rule: Load hours succesfully
         Scenario: Load hours succesfully
-            Given I am a user and i want to load hours in a task
-            When I fill the form with valid data,incluiding the project, the date, the task and the hours
+            Given A user logged in with the id "1234" and name "Admin"
+            When I load hours for the project "Project A" on the date "2024-11-12" in the task "Task 1" with 8 hours
             Then the hours should be loaded
+
 
 
     Rule: Load hours unsuccesfully
         Scenario Outline: Load hours with different inputs
             Given I am a user and I want to load hours in a task
-            When I fill the form with the following data:
-                | Project   | Date   | Task   | Hours   |
-                | <Project> | <Date> | <Task> | <Hours> |
+            When I load hours for the project <Project> on the date <Date> in the task <Task> with <Hours> hours
             Then I should see <ResultMessage>
             And the hours should <Status>
 
