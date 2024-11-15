@@ -28,7 +28,7 @@ dependencies {
 
     // Dependencias para la base de datos
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Para interactuar con bases de datos
-    implementation 'mysql:mysql-connector-java' // Conector MySQL
+    implementation 'mysql:mysql-connector-java:8.0.32'
 
     // Dependencias para pruebas
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

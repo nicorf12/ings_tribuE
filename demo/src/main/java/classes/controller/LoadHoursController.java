@@ -17,12 +17,12 @@ public class LoadHoursController {
     private LoadHoursServiceImpl loadHoursServiceImpl;
 
 
-    @GetMapping
+    @GetMapping("/loadhour")
     public List<LoadHours> loadHours() {
         return loadHoursServiceImpl.getAllHourLoads();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/loadhour/{id}")
     public LoadHours loadHoursById(@PathVariable long id) {
         return loadHoursServiceImpl.getHourLoadById(id)  ;  }
 

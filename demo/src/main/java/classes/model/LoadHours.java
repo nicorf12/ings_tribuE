@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.Time;
 
 @Entity
+@Table(name = "loadHour")
 public class LoadHours {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,19 +26,19 @@ public class LoadHours {
         this.id = id;
     }
 
-    public int getIdResource() {
+    public long getIdResource() {
         return idResource;
     }
 
-    public void setIdResource(int idResource) {
+    public void setIdResource(long idResource) {
         this.idResource = idResource;
     }
 
-    public int getIdTask() {
+    public long getIdTask() {
         return idTask;
     }
 
-    public void setIdTask(int idTask) {
+    public void setIdTask(long idTask) {
         this.idTask = idTask;
     }
 
