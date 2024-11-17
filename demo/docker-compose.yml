@@ -1,32 +1,31 @@
 version: "3.9"
 
 services:
-  mysql-db:
-    image: mysql:9.0.1
-    container_name: mysql_container
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: mi_base_datos
-      MYSQL_USER: user
-      MYSQL_PASSWORD: user_password
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
+#  mysql-db:
+#    image: mysql:9.0.1
+#    container_name: mysql_container
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root_password
+#      MYSQL_DATABASE: mi_base_datos
+#      MYSQL_USER: user
+#      MYSQL_PASSWORD: user_password
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - db_data:/var/lib/mysql
   spring-api:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: spring_api_container
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/mi_base_datos
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: user_password
+      SPRING_DATASOURCE_URL: jdbc:mysql://junction.proxy.rlwy.net:56171/railway
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: LUbIQQSioOwUUJBcnTksuZNjVXLAUQUt
     ports:
       - "8080:8080"
-    depends_on:
-      - mysql-db
+#    depends_on:
+#      - mysql-db
 
 volumes:
   db_data:
