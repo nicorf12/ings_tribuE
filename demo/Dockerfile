@@ -1,6 +1,6 @@
 FROM openjdk:21-jdk-slim
 
-RUN ./gradlew build -x test
+RUN demo/gradlew build -x test
 
 COPY demo/build/libs/demo-0.0.1-SNAPSHOT.jar app.jar
 
