@@ -1,8 +1,8 @@
 FROM openjdk:21-jdk-slim
 
-WORKDIR /app
+RUN ./gradlew build -x test
 
-COPY build/libs/demo-0.0.1-SNAPSHOT.jar app.jar
+COPY demo/build/libs/demo-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
