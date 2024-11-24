@@ -62,7 +62,9 @@ const Carga = () => {
                         placeholder="Ingrese las horas"
                     />
                 </Form.Group>
-                {/* Botón Cambiar fecha */}
+                {/* Botón Cambiar fecha
+                INSERTE CODIGO
+                */}
 
                 {/* Botón Confirmar */}
                 <Button variant="primary" type="submit">
