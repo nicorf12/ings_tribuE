@@ -1,13 +1,12 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useState } from "react";
-import {Button, Container, Form} from "react-bootstrap";
+import { Button, Container, Form } from "react-bootstrap";
+import DataGridProyectos from "./Grid/DataGridProyectos.jsx";
 
 const Proyectos = () => {
-    const [projects, setProjects] = useState([]); // Para almacenar los proyectos
-    const [project, setProject] = useState(null); // Para almacenar el proyecto seleccionado
-
-    setProjects([
+    // Inicializa el estado de projects con los datos de los proyectos
+    const [projects] = useState([
         {
             id: "a6e2167f-67a1-4f60-b9e9-6bae7bc3a15",
             nombre: "Sistema de Gestión de Inventarios",
@@ -25,25 +24,37 @@ const Proyectos = () => {
         }
     ]);
 
+    const [project, setProject] = useState(null); // Para almacenar el proyecto seleccionado
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // Aquí puedes manejar lo que quieras hacer con el proyecto seleccionado
+        console.log("Proyecto seleccionado:", project);
+    };
+
     return (
         <Container className="mt-5">
-            <Form>
-                <Form.Group className="mb-3">
-                    <Form.Label>Proyecto</Form.Label>
-                    <Autocomplete
-                        options={projects}
-                        value={project}
-                        onChange={(event, newValue) => {
-                            setProject(newValue); // Actualiza el proyecto seleccionado
-                        }}
-                        getOptionLabel={(option) => option.nombre} // Muestra el nombre del proyecto
-                        renderInput={(params) => <TextField {...params} label="Seleccione un proyecto" />}
-                    />
-                </Form.Group>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <Form onSubmit={handleSubmit} className="me-2 w-100" >
+                    <Form.Group className="mb-3 ">
+                        <Form.Label>Proyecto</Form.Label>
+                        <Autocomplete
+                            options={projects}
+                            className="w-100"
+                            value={project}
+                            onChange={(event, newValue) => {
+                                setProject(newValue); // Actualiza el proyecto seleccionado
+                            }}
+                            getOptionLabel={(option) => option.nombre} // Muestra el nombre del proyecto
+                            renderInput={(params) => <TextField {...params} label="Seleccione un proyecto" />}
+                        />
+                    </Form.Group>
+                </Form>
                 <Button variant="primary" type="submit">
                     Confirmar
                 </Button>
-            </Form>
+            </div>
+            <DataGridProyectos proyectos={projects} />
         </Container>
     );
 };
