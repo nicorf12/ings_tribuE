@@ -2,13 +2,13 @@
 import Botones from "../components/Button.jsx"
 
 
-const PaginaPrincipal = () => {
+const PaginaPrincipalLider = () => {
 
 
     return (
 
         <div>
-            <h1>Estos son los dos botones</h1>
+            <h1>Estos son los dos botoones!</h1>
             <Botones />
 
         </div>
@@ -16,4 +16,4 @@ const PaginaPrincipal = () => {
     )
 }
 
-export default PaginaPrincipal
+export default PaginaPrincipalLider
