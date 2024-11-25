@@ -1,16 +1,13 @@
 import Navegador from "../components/Navegador/Navegador.jsx";
 import Carga from "../components/Carga.jsx";
 
-const PaginaCargaDesarrollador = () =>{
-
-
-
+const PaginaCargaDesarrollador = () => {
     return (
         <>
-            <Navegador/>
-            <Carga/>
+            <Navegador />
+            <Carga />
         </>
-    )
-}
+    );
+};
 
-export default PaginaCargaDesarrollador
+export default PaginaCargaDesarrollador;

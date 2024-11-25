@@ -11,7 +11,6 @@ const PaginaProyecto = () =>{
             <Navegador/>
             <NavegadorProyecto />
             <DataGridCostos />
-
         </>
     )
 }

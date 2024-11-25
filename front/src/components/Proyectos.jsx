@@ -6,7 +6,7 @@ import DataGridProyectos from "./Grid/DataGridProyectos.jsx";
 
 const Proyectos = () => {
     // Inicializa el estado de projects con los datos de los proyectos
-    const [projects] = useState([
+    const [projects, setProjects] = useState([
         {
             id: "a6e2167f-67a1-4f60-b9e9-6bae7bc3a15",
             nombre: "Sistema de Gestión de Inventarios",
@@ -28,19 +28,16 @@ const Proyectos = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Aquí puedes manejar lo que quieras hacer con el proyecto seleccionado
         console.log("Proyecto seleccionado:", project);
     };
 
     return (
         <Container className="mt-5">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <Form onSubmit={handleSubmit} className="me-2 w-100" >
-                    <Form.Group className="mb-3 ">
-                        <Form.Label>Proyecto</Form.Label>
+            <div className="d-flex justify-content-between align-items-center mb-3 w-100">
+                <Form onSubmit={handleSubmit} className="d-flex w-100 align-items-center">
+                    <Form.Group className="mb-0 w-100"> {/* Ajusta el grupo al 100% */}
                         <Autocomplete
                             options={projects}
-                            className="w-100"
                             value={project}
                             onChange={(event, newValue) => {
                                 setProject(newValue); // Actualiza el proyecto seleccionado
@@ -49,10 +46,10 @@ const Proyectos = () => {
                             renderInput={(params) => <TextField {...params} label="Seleccione un proyecto" />}
                         />
                     </Form.Group>
+                    <Button variant="primary" type="submit" size="lg" className="ms-3" style={{ flexShrink: 0 }}>
+                        Confirmar
+                    </Button>
                 </Form>
-                <Button variant="primary" type="submit">
-                    Confirmar
-                </Button>
             </div>
             <DataGridProyectos proyectos={projects} />
         </Container>

@@ -63,8 +63,6 @@ const Calendar = () => {
     });
     // Deja tasksByDay como un "diccionario" de listas. Claves del 0 al 6.
 
-
-
     return (
         <Container className="mt-4">
             <Table bordered hover responsive>
