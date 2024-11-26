@@ -2,14 +2,18 @@
 import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-import {useState} from "react";
+import { Modal, Button } from 'react-bootstrap';
+import { FaTrash } from "react-icons/fa";
+import { useState } from "react";
 
 
 
+// eslint-disable-next-line react/prop-types
 const Calendar = ( {setCarga} ) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
     const [selectedTask, setSelectedTask] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const handleSelected = (task) =>{
         setSelectedTask(prevId => (prevId === task.id ? null : task.id));
@@ -55,7 +59,7 @@ const Calendar = ( {setCarga} ) => {
         {
             id: "6",
             project: "Toyota",
-            task: "Tarea #1232 nulo",
+            task: "Tarea #1232",
             date: "2024-11-25",
             hours: 4,
         }
@@ -70,7 +74,23 @@ const Calendar = ( {setCarga} ) => {
             return fecha.getDay() === index;
         });
     });
-    // Deja tasksByDay como un "diccionario" de listas. Claves del 0 al 6.
+
+    const handleTrashClick = () => {
+        if (selectedTask) {
+            setShowModal(true);
+        } else {
+            alert("No has seleccionado ninguna tarea para eliminar.");
+        }
+    };
+
+    const confirmDelete = () => {
+        console.log(`Tarea con ID ${selectedTask} eliminada.`);
+        setShowModal(false);
+    };
+
+    const cancelDelete = () => {
+        setShowModal(false);
+    };
 
     return (
         <Container className="mt-4">
@@ -102,6 +122,28 @@ const Calendar = ( {setCarga} ) => {
                 </tr>
                 </tbody>
             </Table>
+
+            <FaTrash
+                style={{ cursor: 'pointer', fontSize: '24px' }}
+                onClick={handleTrashClick}
+            />
+
+            <Modal show={showModal} onHide={cancelDelete}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar eliminación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    ¿Estás seguro de que deseas eliminar la tarea con ID {selectedTask}?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={cancelDelete}>
+                        Cancelar
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Eliminar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };
