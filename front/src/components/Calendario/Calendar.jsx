@@ -5,6 +5,7 @@ import Container from "react-bootstrap/Container";
 
 
 const Calendar = () => {
+    const [selectedCardId, setSelectedCardId] = useState(null);
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
     const cargas = [
@@ -62,6 +63,19 @@ const Calendar = () => {
         });
     });
     // Deja tasksByDay como un "diccionario" de listas. Claves del 0 al 6.
+
+    const handleCardClick = (id) => {
+            setSelectedCardId((prev) => (prev === id ? null : id));
+    };
+
+    const handleDeleteClick = () => {
+        if (selectedCardId) {
+            alert(`¿Seguro que deseas eliminar la tarea con ID: ${selectedCardId}?`);
+                setSelectedCardId(null);
+        } else {
+            alert("Por favor, selecciona una tarea primero.");
+        }
+    };
 
     return (
         <Container className="mt-4">
