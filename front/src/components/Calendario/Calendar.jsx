@@ -1,20 +1,21 @@
 import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
+import { Modal, Button } from 'react-bootstrap';
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 
-const Calendar = () => {
+const Calendar = ( {carga, setCarga} ) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
     const [selectedTask, setSelectedTask] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
-        const handleSelected = (taskId) =>{
-            setSelectedTask(prevId => (prevId === taskId ? null : taskId));
-            console.log(taskId);
-            console.log(taskId);
+    const handleSelected = (taskId) => {
+        setSelectedTask(prevId => (prevId === taskId ? null : taskId));
+        console.log(taskId);
+    };
 
-    }
     const cargas = [
         {
             id: "aas34asd1",
@@ -38,21 +39,21 @@ const Calendar = () => {
             hours: 4,
         },
         {
-            id: "aas34asd3",
+            id: "aas34asd4",
             project: "Toyota",
             task: "Tarea #1232",
             date: "2024-11-17",
             hours: 4,
         },
         {
-            id: "aas34asd3",
+            id: "aas34asd5",
             project: "Toyota",
             task: "Tarea #1232",
             date: "2024-11-18",
             hours: 4,
         },
         {
-            id: "aas34asd3",
+            id: "aas34asd6",
             project: "Toyota",
             task: "Tarea #1232",
             date: "2024-11-25",
@@ -61,7 +62,6 @@ const Calendar = () => {
     ];
 
     const tasksByDay = {};
-
     daysOfWeek.forEach((day, index) => {
         tasksByDay[day] = cargas.filter((task) => {
             const fecha = new Date(task.date);
@@ -71,15 +71,23 @@ const Calendar = () => {
 
     const handleTrashClick = () => {
         if (selectedTask) {
-            alert(`¿Estás seguro de que deseas eliminar la tarea con ID ${selectedTask}?`);
+            setShowModal(true);
         } else {
             alert("No has seleccionado ninguna tarea para eliminar.");
         }
     };
 
+    const confirmDelete = () => {
+        console.log(`Tarea con ID ${selectedTask} eliminada.`);
+        setShowModal(false);
+    };
+
+    const cancelDelete = () => {
+        setShowModal(false);
+    };
+
     return (
         <Container className="mt-4">
-
             <Table bordered hover responsive>
                 <thead className="bg-primary text-white">
                 <tr>
@@ -108,10 +116,28 @@ const Calendar = () => {
                 </tr>
                 </tbody>
             </Table>
+
             <FaTrash
-                            style={{ cursor: 'pointer' }}
-                            onClick={handleTrashClick} // El botón de basura ejecuta la función de borrar
-                        />
+                style={{ cursor: 'pointer', fontSize: '24px' }}
+                onClick={handleTrashClick}
+            />
+
+            <Modal show={showModal} onHide={cancelDelete}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar eliminación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    ¿Estás seguro de que deseas eliminar la tarea con ID {selectedTask}?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={cancelDelete}>
+                        Cancelar
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Eliminar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };
