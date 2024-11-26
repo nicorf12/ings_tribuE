@@ -4,15 +4,11 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // Importa Link de react-router-dom
 import "react-datepicker/dist/react-datepicker.css";
 
-const CalendarioNavegable = ({ carga, setCarga }) => {
+const CalendarioNavegable = () => {
     const [startDate, setStartDate] = useState(new Date());
-
-    const handleTrashClick = () => {
-        alert("¿Seguro que deseas eliminar esta tarea?");
-    };
 
     return (
         <Navbar>
@@ -28,7 +24,7 @@ const CalendarioNavegable = ({ carga, setCarga }) => {
                         <a href={""}>
                             <FaPencilAlt className="me-4" />
                         </a>
-                        <a href={""} onClick={handleTrashClick}>
+                        <a href={""}>
                             <FaTrash className="me-4" />
                         </a>
                         <Link to="/dev/carga-horas">

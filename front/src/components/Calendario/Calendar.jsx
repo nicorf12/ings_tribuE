@@ -1,8 +1,8 @@
-
 import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-
+import { FaTrash } from "react-icons/fa";
+import { useState } from "react";
 
 const Calendar = () => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -52,18 +52,27 @@ const Calendar = () => {
         }
     ];
 
-
     const tasksByDay = {};
 
-        daysOfWeek.forEach((day, index) => {
-            tasksByDay[day] = cargas.filter((task) => {
-                const fecha = new Date(task.date);
-                return fecha.getDay() === index;
-            });
+    daysOfWeek.forEach((day, index) => {
+        tasksByDay[day] = cargas.filter((task) => {
+            const fecha = new Date(task.date);
+            return fecha.getDay() === index;
         });
+    });
+
+    const [selectedTask, setSelectedTask] = useState(null);
+
+    const handleTaskClick = (taskId) => {
+        setSelectedTask(taskId);
+    };
 
     const handleTrashClick = () => {
-        alert("¿Seguro que quieres eliminar esta tarea?");
+        if (selectedTask) {
+            alert(`¿Estás seguro de que deseas eliminar la tarea con ID ${selectedTask}?`);
+        } else {
+            alert("No has seleccionado ninguna tarea para eliminar.");
+        }
     };
 
     return (
@@ -81,16 +90,15 @@ const Calendar = () => {
                         {daysOfWeek.map((day, index) => (
                             <td key={index}>
                                 {tasksByDay[day].map((task) => (
-                                    <Card key={task.id} className="mb-3 shadow-sm">
+                                    <Card
+                                        key={task.id}
+                                        className={`mb-3 shadow-sm ${selectedTask === task.id ? 'bg-light' : ''}`}
+                                        onClick={() => handleTaskClick(task.id)} // Al hacer clic en la tarea, la selecciona
+                                    >
                                         <Card.Body>
                                             <Card.Title className="mb-2">{task.project}</Card.Title>
                                             <Card.Subtitle className="mb-2 text-muted">{task.task}</Card.Subtitle>
-                                            <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>}
-                                            <FaTrash
-                                                className="me-4"
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={handleTrashClick}
-                                            />
+                                            <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>
                                         </Card.Body>
                                     </Card>
                                 ))}
@@ -99,6 +107,10 @@ const Calendar = () => {
                     </tr>
                 </tbody>
             </Table>
+            <FaTrash
+                style={{ cursor: 'pointer' }}
+                onClick={handleTrashClick} // El botón de basura ejecuta la función de borrar
+            />
         </Container>
     );
 };
