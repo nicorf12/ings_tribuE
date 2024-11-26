@@ -7,7 +7,7 @@ import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom"; // Importa Link de react-router-dom
 import "react-datepicker/dist/react-datepicker.css";
 
-const CalendarioNavegable = () => {
+const CalendarioNavegable = ( {carga, setCarga} ) => {
     const [startDate, setStartDate] = useState(new Date());
 
     return (
@@ -21,7 +21,7 @@ const CalendarioNavegable = () => {
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text className="d-flex align-items-center">
-                        <a href={""}>
+                        <a href={""} >
                             <FaPencilAlt className="me-4" />
                         </a>
                         <a href={""}>
