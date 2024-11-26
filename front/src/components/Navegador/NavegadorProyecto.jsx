@@ -9,7 +9,7 @@ const NavegadorProyecto = () => {
         descripcion:
             "Un sistema para llevar el control de los productos en un almacén, incluyendo funciones para agregar, actualizar y eliminar productos, gestionar niveles de stock, y generar reportes de inventario. Suele incluir integración con otras áreas, como ventas y compras, y permite la optimización de recursos.",
     };
-
+    const [selectedDate, setSelectedDate] = useState(new Date());
     return (
         <>
             <Navbar>

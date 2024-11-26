@@ -2,20 +2,10 @@
 import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-import {useState} from "react";
 
 
-
-const Calendar = ( {carga, setCarga} ) => {
+const Calendar = () => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-    const [selectedTask, setSelectedTask] = useState(null);
-
-    const handleSelected = (taskId) =>{
-        setSelectedTask(prevId => (prevId === taskId ? null : taskId));
-        console.log(taskId);
-
-    }
 
     const cargas = [
         {
@@ -65,42 +55,48 @@ const Calendar = ( {carga, setCarga} ) => {
 
     const tasksByDay = {};
 
-    daysOfWeek.forEach((day, index) => {
-        tasksByDay[day] = cargas.filter((task) => {
-            const fecha = new Date(task.date);
-            return fecha.getDay() === index;
+        daysOfWeek.forEach((day, index) => {
+            tasksByDay[day] = cargas.filter((task) => {
+                const fecha = new Date(task.date);
+                return fecha.getDay() === index;
+            });
         });
-    });
-    // Deja tasksByDay como un "diccionario" de listas. Claves del 0 al 6.
+
+    const handleTrashClick = () => {
+        alert("¿Seguro que quieres eliminar esta tarea?");
+    };
 
     return (
         <Container className="mt-4">
             <Table bordered hover responsive>
                 <thead className="bg-primary text-white">
-                <tr>
-                    {daysOfWeek.map((day, index) => (
-                        <th key={index} className="text-center">{day}</th>
-                    ))}
-                </tr>
+                    <tr>
+                        {daysOfWeek.map((day, index) => (
+                            <th key={index} className="text-center">{day}</th>
+                        ))}
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    {daysOfWeek.map((day, index) => (
-                        <td key={index}>
-                            { (
-                                tasksByDay[day].map((task) => (
+                    <tr>
+                        {daysOfWeek.map((day, index) => (
+                            <td key={index}>
+                                {tasksByDay[day].map((task) => (
                                     <Card key={task.id} className="mb-3 shadow-sm">
                                         <Card.Body>
                                             <Card.Title className="mb-2">{task.project}</Card.Title>
                                             <Card.Subtitle className="mb-2 text-muted">{task.task}</Card.Subtitle>
-                                            <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>
+                                            <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>}
+                                            <FaTrash
+                                                className="me-4"
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={handleTrashClick}
+                                            />
                                         </Card.Body>
                                     </Card>
-                                ))
-                            )}
-                        </td>
-                    ))}
-                </tr>
+                                ))}
+                            </td>
+                        ))}
+                    </tr>
                 </tbody>
             </Table>
         </Container>
