@@ -21,7 +21,7 @@ const CalendarioNavegable = () => {
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text className="d-flex align-items-center">
-                        <a href={""}>
+                        <a href={""} >
                             <FaPencilAlt className="me-4" />
                         </a>
                         <a href={""}>

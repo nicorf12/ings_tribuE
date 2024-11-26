@@ -2,10 +2,20 @@
 import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
+import {useState} from "react";
 
 
-const Calendar = () => {
+
+const Calendar = ( {carga, setCarga} ) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+    const [selectedTask, setSelectedTask] = useState(null);
+
+    const handleSelected = (taskId) =>{
+        setSelectedTask(prevId => (prevId === taskId ? null : taskId));
+        console.log(taskId);
+
+    }
 
     const cargas = [
         {
@@ -79,7 +89,7 @@ const Calendar = () => {
                         <td key={index}>
                             { (
                                 tasksByDay[day].map((task) => (
-                                    <Card key={task.id} className="mb-3 shadow-sm">
+                                    <Card key={task.id} className={`mb-3 shadow-sm ${selectedTask === task.id ? 'bg-primary text-white' : ''}`} onClick={() => handleSelected(task.id)} >
                                         <Card.Body>
                                             <Card.Title className="mb-2">{task.project}</Card.Title>
                                             <Card.Subtitle className="mb-2 text-muted">{task.task}</Card.Subtitle>
