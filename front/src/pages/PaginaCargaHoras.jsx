@@ -5,7 +5,7 @@ const PaginaCargaDesarrollador = () => {
     return (
         <>
             <Navegador />
-            <Carga />
+            <Carga editar={false}/>
         </>
     );
 };

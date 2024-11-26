@@ -7,6 +7,7 @@ import PaginaPrincipalDesarrollador from './pages/PaginaPrincipalDesarrollador.j
 import PaginaCargaHoras from './pages/PaginaCargaHoras.jsx';
 import PaginaProyecto from "./pages/PaginaProyecto.jsx";
 import PaginaBuscarProyecto from "./pages/PaginaBuscarProyecto.jsx";
+import PaginaEditarTarea from "./pages/PaginaEditarTarea.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')).render(
             <Routes>
                 <Route path="/dev" element={<PaginaPrincipalDesarrollador />} /> { /* Aca seria /dev */}
                 <Route path="/dev/carga-horas" element={<PaginaCargaHoras />} />
+                <Route path="/dev/editar" element={<PaginaEditarTarea />} />
                 <Route path="/lider/proyecto" element={<PaginaProyecto />} />
                 <Route path="/lider" element={<PaginaBuscarProyecto />} />
             </Routes>

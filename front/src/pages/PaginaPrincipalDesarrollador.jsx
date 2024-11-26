@@ -13,8 +13,8 @@ const PaginaPrincipalDesarrollador = () => {
             <Navegador/>
             <div className="">
                 <h2 className="text-center m-3 ">Calendario de Tareas</h2>
-                <CalendarioNavegable carga={carga} setCarga={setCarga} />
-                <Calendar carga={carga} setCarga={setCarga}/>
+                <CalendarioNavegable carga={carga} />
+                <Calendar setCarga={setCarga}/>
             </div>
         </>
     )

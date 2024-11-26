@@ -1,30 +1,32 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import { useState } from "react";
-import DatePicker from "react-datepicker";
+
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom"; // Importa Link de react-router-dom
 import "react-datepicker/dist/react-datepicker.css";
+import DatePickerExclude from "../DatePicker/DatePickerExclude.jsx";
 
-const CalendarioNavegable = ( {carga, setCarga} ) => {
-    const [startDate, setStartDate] = useState(new Date());
+// eslint-disable-next-line react/prop-types
+const CalendarioNavegable = ( {carga} ) => {
 
+
+    function handleCargarHoras() {
+        // eslint-disable-next-line react/prop-types
+        console.log(carga.id);
+    }
+    
     return (
         <Navbar>
             <Container>
-                <DatePicker
-                    showIcon
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                />
+                <DatePickerExclude />
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text className="d-flex align-items-center">
-                        <a href={""} >
-                            <FaPencilAlt className="me-4" />
-                        </a>
-                        <a href={""}>
+                        <Link to="/dev/editar" state={carga} onClick={handleCargarHoras}>
+                        <FaPencilAlt className="me-4" />
+                        </Link>
+                        <a >
                             <FaTrash className="me-4" />
                         </a>
                         <Link to="/dev/carga-horas">
