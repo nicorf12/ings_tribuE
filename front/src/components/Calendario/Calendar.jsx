@@ -63,9 +63,12 @@ const Calendar = () => {
 
     const [selectedTask, setSelectedTask] = useState(null);
 
-    const handleTaskClick = (taskId) => {
+    const handleSelected = (taskId) =>{
+        setSelectedTask(prevId => (prevId === taskId ? null : taskId));
         setSelectedTask(taskId);
-    };
+        console.log(taskId);
+
+    }
 
     const handleTrashClick = () => {
         if (selectedTask) {
