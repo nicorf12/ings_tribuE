@@ -7,6 +7,14 @@ import { useState } from "react";
 const Calendar = () => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
+    const [selectedTask, setSelectedTask] = useState(null);
+
+        const handleSelected = (taskId) =>{
+            setSelectedTask(prevId => (prevId === taskId ? null : taskId));
+            console.log(taskId);
+            console.log(taskId);
+
+    }
     const cargas = [
         {
             id: "aas34asd1",
@@ -61,15 +69,6 @@ const Calendar = () => {
         });
     });
 
-    const [selectedTask, setSelectedTask] = useState(null);
-
-    const handleSelected = (taskId) =>{
-        setSelectedTask(prevId => (prevId === taskId ? null : taskId));
-        setSelectedTask(taskId);
-        console.log(taskId);
-
-    }
-
     const handleTrashClick = () => {
         if (selectedTask) {
             alert(`¿Estás seguro de que deseas eliminar la tarea con ID ${selectedTask}?`);
@@ -80,40 +79,39 @@ const Calendar = () => {
 
     return (
         <Container className="mt-4">
+
             <Table bordered hover responsive>
                 <thead className="bg-primary text-white">
-                    <tr>
-                        {daysOfWeek.map((day, index) => (
-                            <th key={index} className="text-center">{day}</th>
-                        ))}
-                    </tr>
+                <tr>
+                    {daysOfWeek.map((day, index) => (
+                        <th key={index} className="text-center">{day}</th>
+                    ))}
+                </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        {daysOfWeek.map((day, index) => (
-                            <td key={index}>
-                                {tasksByDay[day].map((task) => (
-                                    <Card
-                                        key={task.id}
-                                        className={`mb-3 shadow-sm ${selectedTask === task.id ? 'bg-light' : ''}`}
-                                        onClick={() => handleTaskClick(task.id)} // Al hacer clic en la tarea, la selecciona
-                                    >
+                <tr>
+                    {daysOfWeek.map((day, index) => (
+                        <td key={index}>
+                            { (
+                                tasksByDay[day].map((task) => (
+                                    <Card key={task.id} className={`mb-3 shadow-sm ${selectedTask === task.id ? 'bg-primary text-white' : ''}`} onClick={() => handleSelected(task.id)} >
                                         <Card.Body>
                                             <Card.Title className="mb-2">{task.project}</Card.Title>
                                             <Card.Subtitle className="mb-2 text-muted">{task.task}</Card.Subtitle>
                                             <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>
                                         </Card.Body>
                                     </Card>
-                                ))}
-                            </td>
-                        ))}
-                    </tr>
+                                ))
+                            )}
+                        </td>
+                    ))}
+                </tr>
                 </tbody>
             </Table>
             <FaTrash
-                style={{ cursor: 'pointer' }}
-                onClick={handleTrashClick} // El botón de basura ejecuta la función de borrar
-            />
+                            style={{ cursor: 'pointer' }}
+                            onClick={handleTrashClick} // El botón de basura ejecuta la función de borrar
+                        />
         </Container>
     );
 };
