@@ -26,10 +26,10 @@ function createData(name, ...values) {
 }
 
 // Meses
-const meses = ["Enero 2024", "Febrero 2024"];
+
 
 // Componente DataGridCostos
-const DataGridCostos = ({costos}) => {
+const DataGridCostos = ({costos ,meses}) => {
     // Crear filas de ejemplo (puedes modificar esto según tus datos)
     const rows = [
         createData('Frozen yoghurt', 159, 6.0),
@@ -51,7 +51,8 @@ const DataGridCostos = ({costos}) => {
                                 >
                                     Recurso
                                 </TableCell>
-                                {meses.map((mes, index) => (
+
+                                { meses ? meses.map((mes, index) => (
                                     <TableCell
                                         key={index}
                                         align="center"
@@ -59,7 +60,11 @@ const DataGridCostos = ({costos}) => {
                                     >
                                         {mes} (g)
                                     </TableCell>
-                                ))}
+                                )): (
+                                    <TableCell>
+                                        No hay meses
+                                    </TableCell>
+                                )}
                                 <TableCell
                                     align="center"
                                     sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}

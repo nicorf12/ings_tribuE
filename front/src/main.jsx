@@ -9,6 +9,8 @@ import PaginaProyecto from "./pages/PaginaProyecto.jsx";
 import PaginaBuscarProyecto from "./pages/PaginaBuscarProyecto.jsx";
 import PaginaEditarTarea from "./pages/PaginaEditarTarea.jsx";
 
+
+
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <Router>

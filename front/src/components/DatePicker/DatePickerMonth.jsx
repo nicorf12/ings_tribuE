@@ -1,17 +1,13 @@
-import { useState } from "react";
+import {useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Asegúrate de importar el CSS
 
 const DatePickerMonth = () => {
-    const defaultStartDate = new Date("2024-08-01");
-    const defaultEndDate = new Date("2024-10-01");
-    const [startDate, setStartDate] = useState(defaultStartDate);
-    const [endDate, setEndDate] = useState(defaultEndDate);
+    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date().setFullYear(new Date().getFullYear() - 1));
 
-    const handleChange = ([newStartDate, newEndDate]) => {
-        setStartDate(newStartDate);
-        setEndDate(newEndDate);
-    };
+
+
     // Generar un array de fechas excluidas
     const generateExcludedDates = () => {
         const excludedDates = [];
@@ -27,19 +23,24 @@ const DatePickerMonth = () => {
         return excludedDates;
     };
 
+
+    const handleChange = ([newStartDate, newEndDate]) => {
+        setStartDate(newStartDate);
+        setEndDate(newEndDate);
+    };
+
     return (
         <DatePicker
             selected={startDate}
             startDate={startDate}
             endDate={endDate}
             onChange={handleChange}
-            excludeDates={generateExcludedDates()}
+            maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))} // Fecha máxima
             dateFormat="MM/yyyy"
-            placeholderText="Select a month other than the disabled months"
+            excludeDates={generateExcludedDates()}
             showMonthYearPicker
             selectsRange
-            maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
         />
     );
-};
+}
 export default DatePickerMonth;
