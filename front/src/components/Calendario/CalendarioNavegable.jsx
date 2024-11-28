@@ -10,7 +10,7 @@ import {useState} from "react";
 
 
 // eslint-disable-next-line react/prop-types
-const CalendarioNavegable = ( {carga} ) => {
+const CalendarioNavegable = ( {carga , setFecha} ) => {
     const [showModal, setShowModal] = useState(false);
     const confirmDelete = () => {
         setShowModal(false);
@@ -70,7 +70,7 @@ const CalendarioNavegable = ( {carga} ) => {
     return (
         <Navbar>
             <Container>
-                <DatePickerExclude />
+                <DatePickerExclude setFecha={setFecha} />
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text className="d-flex align-items-center">

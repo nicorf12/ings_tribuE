@@ -23,4 +23,3 @@ createRoot(document.getElementById('root')).render(
     </StrictMode>
 );
 
-// <Link to="/"> Texto ?? </Link> -> Como se usa
