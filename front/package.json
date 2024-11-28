@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "https://psaloadhour.onrender.com",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,6 +14,8 @@
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@mui/material": "^6.1.8",
+    "axios": "^1.7.8",
+    "cors": "^2.8.5",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-admin": "^5.4.0",

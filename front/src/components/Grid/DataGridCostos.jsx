@@ -29,7 +29,7 @@ function createData(name, ...values) {
 const meses = ["Enero 2024", "Febrero 2024"];
 
 // Componente DataGridCostos
-const DataGridCostos = () => {
+const DataGridCostos = ({costos}) => {
     // Crear filas de ejemplo (puedes modificar esto según tus datos)
     const rows = [
         createData('Frozen yoghurt', 159, 6.0),

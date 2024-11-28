@@ -1,8 +1,11 @@
+
 import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import { useEffect, useState } from "react";
 import "../../../index.css"
+
+
 
 // eslint-disable-next-line react/prop-types
 const Calendar = ({ setCarga, fecha,setFecha }) => {
@@ -10,37 +13,69 @@ const Calendar = ({ setCarga, fecha,setFecha }) => {
     const [selectedTask, setSelectedTask] = useState(null);
     const [tasksByDay, setTasksByDay] = useState({});
 
-    const cargas = [
-        { id: "1", project: "Ford", task: "Tarea #1265", date: "2024-11-20", hours: 2 },
-        { id: "2", project: "CRM v3.0", task: "Tarea #5435", date: "2024-11-21", hours: 4 },
-        { id: "3", project: "Toyota", task: "Tarea #1232", date: "2024-11-22", hours: 4 },
-        { id: "4", project: "Toyota", task: "Tarea #1232", date: "2024-11-17", hours: 4 },
-        { id: "5", project: "Toyota", task: "Tarea #1232", date: "2024-11-18", hours: 4 },
-        { id: "6", project: "Toyota", task: "Tarea #1232", date: "2024-11-25", hours: 4 }
-    ];
+
+    let cargas ={}
 
     useEffect(() => {
-        if(fecha == null) {
-            //si es nula,la carga y vuelve al use effect
+        if (fecha == null) {
             setFecha(new Date());
-        }else{
+        } else {
             const startOfWeek = new Date(fecha);
-            //setea fecha hasta domingo de esa semana
             startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-            const tasks = {};
-            daysOfWeek.forEach((day, index) => {
-                const currentDay = new Date(startOfWeek);
-                currentDay.setDate(startOfWeek.getDate() + index); // Añade el índice para obtener el día correcto
-                tasks[day] = cargas.filter(task => {
-                    const taskDate = new Date(task.date);
-                    return taskDate.toDateString() === currentDay.toDateString(); // Compara solo la fecha
-                });
-            });
-            setTasksByDay(tasks);
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+
+             const url = `https://psa-loadhour.onrender.com/api/hours?initDate=${formatDate(startOfWeek)}&endDate=${formatDate(endOfWeek)}`;
+            
+
+
+            const fetchData = async () => {
+                try {
+                    console.log(url);
+                    let response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Error en la solicitud: ${response.status}`);
+                    }
+
+
+                    cargas = await response.json(); // Espera la respuesta JSON
+                    console.log(cargas);
+
+
+                    // Crear un objeto para almacenar las tareas por día
+                    const tasks = {};
+                    if(cargas) {
+                        daysOfWeek.forEach((day, index) => {
+                            const currentDay = new Date(startOfWeek);
+                            currentDay.setDate(startOfWeek.getDate() + index);
+                            tasks[day] = cargas.filter(task => {
+                                const taskDate = new Date(task.date);
+                                return taskDate.toDateString() === currentDay.toDateString();
+                            });
+                        });
+                    }
+                    setTasksByDay(tasks);
+                } catch (error) {
+                    console.error('Hubo un problema con la solicitud GET:', error);
+                    console.error(error);
+
+                }
+            };
+
+            fetchData();
         }
-
     }, [fecha]);
+
+
+
 
 
 
@@ -94,3 +129,5 @@ const Calendar = ({ setCarga, fecha,setFecha }) => {
 };
 
 export default Calendar;
+
+
