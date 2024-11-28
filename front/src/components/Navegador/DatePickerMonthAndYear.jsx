@@ -1,8 +1,6 @@
-import {useState} from "react";
 import DatePicker from "react-datepicker";
 
-const DatePickerMonthAndYear = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+const DatePickerMonthAndYear = ({ selectedDate, setSelectedDate }) => {
 
     const handleChange = (newDate) => {
         setSelectedDate(newDate);

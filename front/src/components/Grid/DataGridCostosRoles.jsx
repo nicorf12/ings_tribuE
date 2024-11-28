@@ -156,7 +156,7 @@ const DataGridCostosRoles = () => {
                     }}
                 />
             ) : (
-                `$ ${row.incomeByHour}`
+                `$ ${row.incomeByHour.toLocaleString("es-ES")}`
             )}
         </TableCell>
     );

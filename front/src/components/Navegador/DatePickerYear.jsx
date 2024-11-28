@@ -1,8 +1,6 @@
 import DatePicker from "react-datepicker";
-import {useState} from "react";
 
-const DatePickerYear = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+const DatePickerYear = ({ selectedDate, setSelectedDate }) => {
 
     const renderYearContent = (year) => {
         const tooltipText = `Año: ${year}`;
@@ -20,9 +18,8 @@ const DatePickerYear = () => {
             showYearPicker
             dateFormat="yyyy"
             onChange={handleChange}
-            placeholderText="Selccione el año que desea visualizar"
+            placeholderText="Seleccione un año"
             maxDate={new Date()}
-            //showIcon
         />
     );
 };

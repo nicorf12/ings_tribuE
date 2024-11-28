@@ -20,16 +20,9 @@ const theme = createTheme({
     },
 });
 
-const DataGridCostosProyectos = () => {
+const DataGridCostosProyectos = ({projects}) => {
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-    const rows = [
-        { project: { id: 1, name: 'P1', description: 'Description P1' }, cost: { byMonth: { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100 }, total: 1200 } },
-        { project: { id: 2, name: 'P2', description: 'Description P2' }, cost: { byMonth: { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 0, 12: 0 }, total: 1000 }},
-        { project: { id: 3, name: 'P3', description: 'Description P3' }, cost: { byMonth: { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100 }, total: 1200 } },
-        { project: { id: 4, name: 'P4', description: 'Description P4' }, cost: { byMonth: { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100 }, total: 1200 }},
-        { project: { id: 5, name: 'P5', description: 'Description P5' }, cost: { byMonth: { 1: 50000, 2: 50000, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100 }, total: 51000 }},
-    ];
 
     const drawProjectHeader = () => (
         <TableCell sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}>
@@ -38,13 +31,13 @@ const DataGridCostosProyectos = () => {
     );
 
     const drawMonthsHeader = () => (
-        months.map((mes, index) => (
+        months.map((month, index) => (
             <TableCell
                 key={index}
                 align="center"
                 sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center', maxWidth: 80 }}
             >
-                {mes}
+                {month}
             </TableCell>
         ))
     );
@@ -77,28 +70,25 @@ const DataGridCostosProyectos = () => {
     );
 
     const drawMonthValues = (byMonth) => (
-        Object.entries(byMonth).map(([month, value], index) => (
-            <TableCell
-                key={index}
-                align="center"
-                sx={{ color: 'text.primary', textAlign: 'center' }}
-            >
-                {value}
-            </TableCell>
+        Object.entries(byMonth).map(([month, amount], index) => (
+            drawAmountValue(amount, month)
         ))
     );
 
-    const drawTotalValue = (total) => (
+    const drawAmountValue = (amount, key) => (
         <TableCell
+            key={key}
             align="center"
             sx={{ color: 'text.primary', textAlign: 'center' }}
         >
-            {total}
+            $ {amount.toLocaleString('es-ES')}
         </TableCell>
     );
 
+
+
     const drawBody = () => (
-        rows.map((row, rowIndex) => (
+        projects.map((row, rowIndex) => (
             <TableRow
                 key={row.project.id}
                 sx={{
@@ -107,7 +97,7 @@ const DataGridCostosProyectos = () => {
             >
                 {drawProjectValue(row.project)}
                 {drawMonthValues(row.cost.byMonth)}
-                {drawTotalValue(row.cost.total)}
+                {drawAmountValue(row.cost.total, 'total-amount')}
             </TableRow>
         ))
     );
