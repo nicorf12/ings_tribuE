@@ -8,6 +8,8 @@ import PaginaCargaHoras from './pages/PaginaCargaHoras.jsx';
 import PaginaProyecto from "./pages/PaginaProyecto.jsx";
 import PaginaBuscarProyecto from "./pages/PaginaBuscarProyecto.jsx";
 import PaginaEditarTarea from "./pages/PaginaEditarTarea.jsx";
+import PaginaCostoProyectos from "./pages/PaginaCostoProyectos.jsx";
+import PaginaCostoRoles from "./pages/PaginaCostoRoles.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -18,6 +20,8 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/dev/editar" element={<PaginaEditarTarea />} />
                 <Route path="/lider/proyecto" element={<PaginaProyecto />} />
                 <Route path="/lider" element={<PaginaBuscarProyecto />} />
+                <Route path="/costos/proyectos" element={<PaginaCostoProyectos/>} />
+                <Route path="/costos/roles" element={<PaginaCostoRoles/>} />
             </Routes>
         </Router>
     </StrictMode>
