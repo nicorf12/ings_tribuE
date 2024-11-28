@@ -89,6 +89,26 @@ export async function obtenerCargas() {
     }
 }
 
+export async function obtenerCargas() {
+    const url = `http://localhost:8080/api/loadhour`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error al obtener cargas:", error);
+        throw error;
+    }
+}
+
 
 
 export function obtenerCostos() {
