@@ -3,8 +3,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Asegúrate de importar el CSS
 
 const DatePickerMonth = () => {
-    const [endDate, setEndDate] = useState(new Date());
-    const [startDate, setStartDate] = useState(new Date().setFullYear(new Date().getFullYear() - 1));
+    const [endDateLocal, setEndDateLocal] = useState(new Date());
+    const [startDateLocal, setStartDateLocal] = useState(new Date().setFullYear(new Date().getFullYear() - 1));
 
 
 
@@ -25,15 +25,15 @@ const DatePickerMonth = () => {
 
 
     const handleChange = ([newStartDate, newEndDate]) => {
-        setStartDate(newStartDate);
-        setEndDate(newEndDate);
+        setStartDateLocal(newStartDate);
+        setEndDateLocal(newEndDate);
     };
 
     return (
         <DatePicker
-            selected={startDate}
-            startDate={startDate}
-            endDate={endDate}
+            selected={startDateLocal}
+            startDate={startDateLocal}
+            endDate={endDateLocal}
             onChange={handleChange}
             maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))} // Fecha máxima
             dateFormat="MM/yyyy"

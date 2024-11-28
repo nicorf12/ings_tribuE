@@ -5,92 +5,74 @@ import { useState, useEffect } from "react";
 import {useLocation} from "react-router-dom";
 import {  obtenerProyectos, obtenerCostos } from "../solicitudes.jsx";
 
-function getProyecto(proyectoId) {
+// Función para calcular los meses entre dos fechas
+function calcularMeses(start, end) {
+    const mesesArray = [];
+    const startYear = start.getFullYear();
+    const endYear = end.getFullYear();
+    const startMonth = start.getMonth();
+    const endMonth = end.getMonth();
 
-    const proyectos = obtenerProyectos();
+    for (let year = startYear; year <= endYear; year++) {
+        const startM = year === startYear ? startMonth : 0;
+        const endM = year === endYear ? endMonth : 11;
 
-    /*
-    for (let i = 0; i < proyectos.length; i++) {
-        if (proyectos[i].id === proyectoId) {
-            return proyectos[i];
+        for (let month = startM; month <= endM; month++) {
+            mesesArray.push(new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' }));
         }
     }
-    */
-    return proyectos.find(proyecto => proyecto.id === proyectoId);
-}
 
-const PaginaProyecto = () => {
+    return mesesArray;
+};
+
+const PaginaProyecto = ({ proyecto_elegido }) => {
     const [costos, setCostos] = useState(null);
     const [proyecto, setProyecto] = useState(null);
     const [endDate, setEndDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date(endDate));
-
+    const [endDatePick, setEndDatePick] = useState(new Date());
+    const [startDatePick, setStartDatePick] = useState(new Date(endDate));
     const [meses, setMeses] = useState(null);
 
-
-
-    // Función para calcular los meses entre dos fechas
-    const calcularMeses = (start, end) => {
-        const mesesArray = [];
-        const startYear = start.getFullYear();
-        console.log(startYear);
-        const endYear = end.getFullYear() ;
-        console.log(endYear);
-        const startMonth = start.getMonth();
-        console.log(startMonth);
-        const endMonth = end.getMonth();
-        console.log(endMonth);
-
-        for (let year = startYear; year <= endYear; year++) {
-            const startM = year === startYear ? startMonth : 0;
-            const endM = year === endYear ? endMonth : 11;
-
-            for (let month = startM; month <= endM; month++) {
-                mesesArray.push(new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' }));
-            }
-        }
-
-        return mesesArray;
-    };
-
     const location = useLocation();
-    const proyectoId = location.state;
-    //setProyecto(getProyecto(proyectoId));
 
+    // Establecer proyecto solo una vez o cuando cambie `location.state`
     useEffect(() => {
-        // Establecer el proyecto y los costos solo una vez al montar el componente
+        const proyecto_aux = location.state;
+        if (proyecto_aux) {
+            setProyecto(proyecto_aux);
+        }
+    }, [location.state]);
 
-        const costos_aux = obtenerCostos();
+    const handleConfirmarNuevaBusqueda = () => {
+        console.log("FECHA CAMBIADA");
 
+        setEndDate(endDatePick);
+
+        const newStartDate = new Date();
+        newStartDate.setFullYear(newEndDate.getFullYear() - 1);
+        setStartDate(newStartDate);
+
+        const mesesCalculados = calcularMeses(newStartDate, newEndDate);
+        setMeses(mesesCalculados);
+
+        // Simulación de costos
         setCostos({
             'Febrero 2024': 100,
             'Marzo 2024': 200,
-            'Julio': 300,
-            'Junio': 400
+            'Julio 2024': 300,
+            'Junio 2024': 400,
         });
+    }
 
-
-        const newEndDate = new Date();
-       setEndDate(newEndDate);
-       const newStartDate = new Date();
-       newStartDate.setFullYear(newEndDate.getFullYear() - 1);
-       setStartDate(newStartDate);
-
-
-
-       //nesecito agarrar los meses entre fecha y fecha
-        const mesesCalculados = calcularMeses(startDate, endDate);
-        setMeses(mesesCalculados);
-
-    }, [ endDate]); // El array vacío asegura que esto solo se ejecute una vez al montar el componente
 
     return (
         <>
             <Navegador />
-            <NavegadorProyecto proyecto={proyecto} startDate={startDate} endDate={endDate} />
+            <NavegadorProyecto proyecto={proyecto} handle={handleConfirmarNuevaBusqueda} startDate={startDate} endDate={endDate} />
             <DataGridCostos costos={costos} meses={meses} />
         </>
     );
-}
+};
 
 export default PaginaProyecto;

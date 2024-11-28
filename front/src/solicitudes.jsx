@@ -58,16 +58,38 @@ export function obtenerProyectos() {
     ];
 }
 
+/*
 export function obtenerCargas() {
     return [
-        { id: "1", project: "Ford", task: "f635b4ca-c091-472c-8b5a-cb3086d1973", date: "2024-11-20", hours: 2 },
-        { id: "2", project: "CRM v3.0", task: "1635b4ca-c091-472c-8b5a-cb3086d1973", date: "2024-11-21", hours: 4 },
-        { id: "3", project: "Toyota", task: "Tarea #1232", date: "2024-11-22", hours: 4 },
-        { id: "4", project: "Toyota", task: "Tarea #1232", date: "2024-11-17", hours: 4 },
-        { id: "5", project: "Toyota", task: "Tarea #1232", date: "2024-11-18", hours: 4 },
-        { id: "6", project: "Toyota", task: "Tarea #1232", date: "2024-11-25", hours: 4 }
+        { id:'1', idResource: "1", idProject: "Ford", idTask: "f635b4ca-c091-472c-8b5a-cb3086d1973", date: "2024-11-20", hours: 2 },
+        { id:'2', idResource: "2", idProject: "CRM v3.0", idTask: "1635b4ca-c091-472c-8b5a-cb3086d1973", date: "2024-11-21", hours: 4 },
     ]
 }
+*/
+
+
+
+export async function obtenerCargas() {
+    const url = `http://localhost:8080/api/loadhour`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error al obtener cargas:", error);
+        throw error;
+    }
+}
+
+
 
 export function obtenerCostos() {
     return  [

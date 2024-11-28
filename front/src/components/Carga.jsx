@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Form, Button } from "react-bootstrap";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../solicitudes.jsx";
+import { useNavigate } from 'react-router-dom';
 
 
 import DatePickerExclude from "./DatePicker/DatePickerExclude.jsx";
@@ -11,25 +12,32 @@ const Carga = ({editar,carga}) => {
     const [project, setProject] = useState(null);
     const [task, setTask] = useState(null);
     const [hours, setHours] = useState("");
+    const navigate = useNavigate();
 
-
-    //const projects = ["Ford", "CRM v3.0", "Toyota"];
-    const projects = getProjectSelectList();
-    const tasks = getTasksSelectMap(projects);
-    //const tasks = {
-    //    Ford: ["Tarea 1265", "Tarea 1266"],
-    //    "CRM v3.0": ["Tarea 5435", "Tarea 5436"],
-    //    Toyota: ["Tarea 1232", "Tarea 1233"],
-    //};
-
+    const projects_aux = obtenerProyectos();
+    const projects = getProjectSelectList(projects_aux);
+    const tasks = getTasksSelectMap(projects_aux);
     let proyecto;
     let tarea;
     let horas;
     let fecha;
 
+    const [fecha_elegida , setFecha] = useState(new Date());
+
+    useEffect(() => {
+        if (carga != null) {
+            setHours(carga.hours)
+            let dateCalendar = new Date(carga.date);
+            dateCalendar.setDate(dateCalendar.getDate() + 1);
+            setFecha(dateCalendar)
+        }
+
+    }, [])
+
     if (editar && carga) {
         proyecto = <Autocomplete
-            options={projects}
+            disabled={true}
+            options= {[]}
             value={project}
             renderInput={(params) => (
                 <TextField
@@ -43,7 +51,8 @@ const Carga = ({editar,carga}) => {
             )}
         />
         tarea = <Autocomplete
-            options={project ? tasks[project] || [] : []}
+            disabled={true}
+            options= {[]}
             value={task}
             renderInput={(params) => (
                 <TextField
@@ -60,14 +69,15 @@ const Carga = ({editar,carga}) => {
         horas = <TextField
             type="number"
             fullWidth
-            value={carga.hours}
+            value={hours}
             onChange={(e) => setHours(e.target.value)}
             placeholder="Ingrese las horas"
         />
 
-        let dateCalendar = new Date(carga.date);
-        dateCalendar.setDate(dateCalendar.getDate() + 1);
-        fecha = <DatePickerExclude date={dateCalendar} />
+        fecha = <DatePickerExclude
+            date={fecha_elegida}
+            setFecha={setFecha}
+        />
     } else {
         proyecto = <Autocomplete
             options={projects}
@@ -83,6 +93,7 @@ const Carga = ({editar,carga}) => {
             options={project ? tasks[project] || [] : []}
             value={task}
             onChange={(event, newValue) => setTask(newValue)}
+            getOptionLabel={(option) => option?.nombre || ""}
             renderInput={(params) => (
                 <TextField
                     {...params}
@@ -100,20 +111,60 @@ const Carga = ({editar,carga}) => {
             placeholder="Ingrese las horas"
         />
 
-        fecha = <DatePickerExclude date={new Date()} />
+        fecha = <DatePickerExclude
+            date={fecha_elegida}
+            setFecha={setFecha}
+        />
     }
 
-    const handleSubmit = async (e) => {
-        //e.preventDefault();
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+
+    const handleSubmitUpdate = async (e) => {
+        e.preventDefault();
 
         const request = {
-            idResource:
-            idTask:
-
+            hours: hours,
+            date: formatDate(fecha.props.date)
         }
 
+        console.log(JSON.stringify(request))
         try {
-            const response = await fetch('http://localhost:8080/add', {
+            const response = await fetch(`http://localhost:8080/api/mofify/${carga.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                console.log('Form submitted successfully!');
+                navigate('/dev');
+            } else {
+                console.error('Error submitting form');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const request = {
+            idResource: "ff14a491-e26d-4092-86ea-d76f20c165d1",
+            idTask: task.id,
+            hours: hours,
+            date: formatDate(fecha.props.date)
+        }
+        console.log(JSON.stringify(request))
+        try {
+            const response = await fetch('http://localhost:8080/api/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -123,6 +174,7 @@ const Carga = ({editar,carga}) => {
 
             if (response.ok) {
                 console.log('Form submitted successfully!');
+                navigate('/dev');
             } else {
                 console.error('Error submitting form');
             }
@@ -134,7 +186,7 @@ const Carga = ({editar,carga}) => {
     return (
         <Container className="mt-5">
             <h2 className="text-center mb-4">Carga de horas</h2>
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={editar ? handleSubmitUpdate : handleSubmit}>
                 {/* Campo Proyecto */}
                 <Form.Group className="mb-3">
                     <Form.Label>Proyecto</Form.Label>
@@ -168,11 +220,10 @@ const Carga = ({editar,carga}) => {
     );
 };
 
-const getProjectSelectList = () => {
-    const projects = obtenerProyectos();
+const getProjectSelectList = (projects) => {
     const result = [];
     projects.forEach((project) => {
-        result.push(project.nombre + project.id)
+        result.push(project.nombre)
     })
     return result;
 }
@@ -181,7 +232,7 @@ const getTasksSelectMap = (projects) => {
     const tareas = obtenerTareas();
     const result = {}
     projects.forEach((project) => {
-        result[project.nombre + project.id] = getTasksInProject(tareas, project.id)
+        result[project.nombre] = getTasksInProject(tareas, project.id)
     })
     return result;
 }
@@ -190,7 +241,8 @@ const getTasksInProject = (tareas, projectId) => {
     const result = []
     tareas.forEach((task) => {
         if (task.proyectoId === projectId) {
-            result.push(task.nombre)
+
+            result.push(task)
         }
     })
     return result;

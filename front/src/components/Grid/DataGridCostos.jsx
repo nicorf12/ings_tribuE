@@ -25,9 +25,6 @@ function createData(name, ...values) {
     return { name, values };
 }
 
-// Meses
-
-
 // Componente DataGridCostos
 const DataGridCostos = ({costos ,meses}) => {
     // Crear filas de ejemplo (puedes modificar esto según tus datos)
@@ -38,6 +35,8 @@ const DataGridCostos = ({costos ,meses}) => {
         createData('Cupcake', 305, 3.7),
         createData('Gingerbread', 356, 16.0),
     ];
+
+
 
     return (
         <ThemeProvider theme={theme}>

@@ -7,7 +7,7 @@ import {useState} from "react";
 
 const PaginaPrincipalDesarrollador = () => {
     const [ carga, setCarga] = useState(null);
-    const [fecha, setFecha] = useState(null);
+    const [fecha, setFecha] = useState(new Date());
 
     return (
         <>

@@ -6,8 +6,6 @@ const DatePickerExclude = ({ date ,setFecha}) => {
   const [startDate, setStartDate] = useState(new Date());
 
   useEffect(() => {
-
-
     const today = new Date();
     // Asegúrate de que 'date' sea un objeto Date válido
     const parsedDate = new Date(date);
@@ -31,7 +29,6 @@ const DatePickerExclude = ({ date ,setFecha}) => {
     setStartDate(date);
     if (date){
       setFecha(date);
-      console.log(date);
     }
   };
 

@@ -77,7 +77,7 @@ const DataGridProyectos = ({ proyectos, onSelect }) => {
                                     align="center"
                                     sx={{ color: 'text.primary', textAlign: 'center' }}
                                 >
-                                    <Link to={"/lider/proyecto"} state={proyecto.id} style={{ color: '#1976d2', textDecoration: 'none' }}>Ir</Link>
+                                    <Link to={"/lider/proyecto"} state={proyecto} style={{ color: '#1976d2', textDecoration: 'none' }}>Ir</Link>
                                 </TableCell>
                             </TableRow>
                         ))}

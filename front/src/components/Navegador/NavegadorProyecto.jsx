@@ -3,7 +3,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { Button } from "react-bootstrap";
 import DatePickerMonth from "../DatePicker/DatePickerMonth.jsx";
 
-const NavegadorProyecto = ({ proyecto, startDate,endDate,setStartDate,setEndDate }) => {
+const NavegadorProyecto = ({ proyecto, handle, startDatePick,endDatePick,setStartDatePick,setEndDatePick }) => {
     return (
         <Navbar>
             <Container>
@@ -20,8 +20,8 @@ const NavegadorProyecto = ({ proyecto, startDate,endDate,setStartDate,setEndDate
                 </div>
                 <Navbar.Collapse className="ms-4 justify-content-end">
                     <Navbar.Text className="d-flex align-items-center">
-                        <DatePickerMonth startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
-                        <Button className="ms-2 btn-sm">Buscar</Button>
+                        <DatePickerMonth startDate={startDatePick} endDate={endDatePick} setStartDate={setStartDatePick} setEndDate={setEndDatePick} />
+                        <Button className="ms-2 btn-sm" onClick={handle}>Buscar</Button>
                     </Navbar.Text>
                 </Navbar.Collapse>
             </Container>

@@ -4,93 +4,47 @@ import Container from "react-bootstrap/Container";
 import { useEffect, useState } from "react";
 import "../../../index.css";
 import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../../solicitudes.jsx";
+import {func} from "prop-types";
 
-
-
-
-// eslint-disable-next-line react/prop-types
 const Calendar = ({ setCarga, fecha, setFecha }) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const [cargas, setCargas] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [tasksByDay, setTasksByDay] = useState({});
-    const [projects, setProjects] = useState([]);
-    const [tareas, setTareas] = useState([]);
+    const projects = obtenerProyectos();
+    const tareas = obtenerTareas();
 
-    const cargas = obtenerCargas();
-
+    // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
     useEffect(() => {
-        // Cargar proyectos y tareas al montar el componente
-        setProjects(obtenerProyectos());
-        setTareas(obtenerTareas());
-    }, []);
+        const fetchData = async () => {
+            let cargas_aux = await obtenerCargas();
+            setCargas(formatCargas(cargas_aux, tareas, projects));
+        };
+        fetchData();
 
-    useEffect(() => {
-        if (fecha == null) {
-            setFecha(new Date());
-        } else {
-            const startOfWeek = new Date(fecha);
-            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-            const endOfWeek = new Date(startOfWeek);
-            endOfWeek.setDate(startOfWeek.getDate() + 6);
+        const startOfWeek = new Date(fecha);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-            const formatDate = (date) => {
-                const year = date.getFullYear();
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const day = date.getDate().toString().padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
+        const tasks = {};
+        daysOfWeek.forEach((day, index) => {
+            const currentDay = new Date(startOfWeek);
+            currentDay.setDate(startOfWeek.getDate() + index);
+            tasks[day] = cargas.filter(task => {
+                const taskDate = new Date(task.date);
+                taskDate.setDate(taskDate.getDate() + 1)
+                return taskDate.toDateString() === currentDay.toDateString();
+            });
+        });
+        setTasksByDay(tasks);
+    }, [fecha]); // Esto asegura que se ejecute cada vez que 'fecha' cambie
 
-           // const url = `https://psa-loadhour.onrender.com/api/hours?initDate=${formatDate(startOfWeek)}&endDate=${formatDate(endOfWeek)}`;
-
-            /*
-            const fetchData = async () => {
-                try {
-                    let response = await fetch(url, {
-                        headers:{Accept:"}
-                });
-                    if (!response.ok) {
-                        throw new Error(`Error en la solicitud: ${response.status}`);
-                    }
-
-                    const cargas = await response.json();
-                    console.log(cargas);
-
-                */
-                    // Conectar cargas con tareas y proyectos
-                    const updatedCargas = cargas.map(carga => {
-                        const tarea = tareas.find(t => t.id === carga.task);
-
-                        const proyecto = projects.find(p => p.id === tarea?.proyectoId);
-                        return {
-                            ...carga,
-                            nameTask: tarea ? tarea.nombre : 'Tarea Desconocida',
-                            nameProject: proyecto ? proyecto.nombre : 'Proyecto Desconocido',
-                        };
-                    });
-
-                    // Crear un objeto para almacenar las tareas por día
-                    const tasks = {};
-                    daysOfWeek.forEach((day, index) => {
-                        const currentDay = new Date(startOfWeek);
-                        currentDay.setDate(startOfWeek.getDate() + index);
-                        tasks[day] = updatedCargas.filter(task => {
-                            const taskDate = new Date(task.date);
-                            return taskDate.toDateString() === currentDay.toDateString();
-                        });
-                    });
-                    setTasksByDay(tasks);
-                    /*
-                } catch (error) {
-                    console.error('Hubo un problema con la solicitud GET:', error);
-                }
-
-                     */
-
-    }}, [fecha, tareas, projects]);
 
     const handleSelected = (task) => {
         setSelectedTask(prevId => (prevId === task.id ? null : task.id));
         setCarga(prevCarga => (prevCarga && prevCarga.id === task.id) ? null : task);
+        console.log(task.id);
     };
 
     const today = new Date(fecha);
@@ -116,11 +70,12 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
                 <tr>
                     {daysOfWeek.map((day, index) => (
                         <td key={index} className={todayIndex === index ? "bg-light" : ""}>
-                            {(tasksByDay[day] || []).map((task) => (
-                                <Card key={task.id} className={`mb-3 shadow-sm py-${task.hours * 5} ${selectedTask === task.id ? 'bg-primary text-white' : ''}`} onClick={() => handleSelected(task)}>
-                                    <Card.Body>
-                                        <Card.Title className="mb-2">{task.nameProject}</Card.Title>
-                                        <Card.Subtitle className="mb-2 text-muted">{task.nameTask}</Card.Subtitle>
+                            {
+                                (tasksByDay[day] || []).map((task) => (
+                                <Card key={task.id} className={`mb-3 shadow-sm  ${selectedTask === task.id ? 'bg-primary text-white' : ''}`} onClick={() => handleSelected(task)}>
+                                    <Card.Body  style ={{ height:task.hours*65 , display:"flex" , flexDirection:"column" ,justifyContent:"center",textAlign:"center" }}>
+                                        <Card.Title className="mb-1">{task.project}</Card.Title>
+                                        <Card.Subtitle className="mb-1 text-muted">{task.task}</Card.Subtitle>
                                         <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>
                                     </Card.Body>
                                 </Card>
@@ -132,6 +87,29 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
             </Table>
         </Container>
     );
+};
+
+const formatCargas = (cargas, tareas, proyectos) => {
+    let cargas_formateadas = [];
+    cargas.forEach((carga) => {
+        const task = tareas.find((t) => t.id === carga.idTask);
+        const project = proyectos.find((p) => p.id === task.proyectoId);
+        cargas_formateadas.push({
+            hours: carga.hours,
+            task: task.nombre,
+            project: project.nombre,
+            date: carga.date,
+            id: carga.id
+        });
+    });
+    return cargas_formateadas;
+};
+
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
 };
 
 export default Calendar;
