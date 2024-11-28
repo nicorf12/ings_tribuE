@@ -1,8 +1,9 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import { Button } from "react-bootstrap";
+import {Button, Spinner} from "react-bootstrap";
 import DatePickerYear from "./DatePickerYear.jsx";
 import {useState} from "react";
+import {request} from '../../utils/Json';
 
 const NavegadorCostoProyecto = ({setProjects}) => {
     const header = {
@@ -13,6 +14,8 @@ const NavegadorCostoProyecto = ({setProjects}) => {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [lastYearSearched, setlastYearSearched] = useState(null);
+    const [loading, setLoading] = useState(false);
+
 
     const testProjects = [
         { project: { id: 1, name: 'P1', description: 'Description P1' }, cost: { byMonth: { 1: '100,1', 2: 100, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100 }, total: '1200,1' } },
@@ -25,33 +28,23 @@ const NavegadorCostoProyecto = ({setProjects}) => {
     const prodBaseUrl = "https://two0242c-is-squad12.onrender.com/finance/projects/reports";
     const baseUrl = "http://localhost:9290/finance/projects/reports";
 
-    const fetchProjects = async () => {
-        try {
-            const year = selectedDate.getFullYear()
-            const url = `${baseUrl}?year=${year}`
-            console.log("Fetching projects. URL: ", url);
-            const response = await fetch(url, {
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
-            console.log("Projects obtained.");
-            setProjects(data);
-        } catch (error) {
-            console.error("Error fetching projects:", error);
-            setlastYearSearched(null);
-        }
-    };
-
     const isSearchDisabled = () => {
         return selectedDate == null || selectedDate.getFullYear() === lastYearSearched;
     };
 
-    const handleSearch = () => {
-        fetchProjects();
-        setlastYearSearched(selectedDate.getFullYear());
+    const handleSearch = async () => {
+        setLoading(true);
+        const year = selectedDate.getFullYear();
+        const url = `${prodBaseUrl}?year=${year}`;
+        const json = await request(url);
+        //const json = getTestProjects;
+        (json != null) ? setProjects(json) : setProjects([]);
+        if (json != null) setlastYearSearched(selectedDate.getFullYear());
+        setLoading(false);
+    }
+
+    const getTestProjects = (url) => {
+        return testProjects;
     }
 
     const searchButton = () => (
@@ -77,7 +70,7 @@ const NavegadorCostoProyecto = ({setProjects}) => {
                     <Navbar.Collapse className="ms-4 justify-content-end">
                         <Navbar.Text className="d-flex align-items-center">
                             <DatePickerYear selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
-                            {searchButton()}
+                            {loading ? <Spinner animation="border" role="status" className="ms-2" /> : searchButton()}
                         </Navbar.Text>
                     </Navbar.Collapse>
                 </Container>
