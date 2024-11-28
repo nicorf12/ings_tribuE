@@ -22,6 +22,8 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
         };
         fetchData();
 
+        console.log(cargas);
+
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
         const endOfWeek = new Date(startOfWeek);

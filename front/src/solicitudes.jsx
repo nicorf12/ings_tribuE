@@ -68,7 +68,7 @@ export function obtenerCargas() {
 */
 
 
-
+/*
 export async function obtenerCargas() {
     const url = `http://localhost:8080/api/loadhour`;
 
@@ -88,6 +88,7 @@ export async function obtenerCargas() {
         throw error;
     }
 }
+*/
 
 export async function obtenerCargas() {
     const url = `http://localhost:8080/api/loadhour`;
