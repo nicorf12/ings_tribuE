@@ -26,10 +26,14 @@ const Proyectos = () => {
 
     const [project, setProject] = useState(null); // Para almacenar el proyecto seleccionado
 
+
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("Proyecto seleccionado:", project);
     };
+
+
+
 
     return (
         <Container className="mt-5">
@@ -46,7 +50,7 @@ const Proyectos = () => {
                             renderInput={(params) => <TextField {...params} label="Seleccione un proyecto" />}
                         />
                     </Form.Group>
-                    <Button variant="primary" type="submit" size="lg" className="ms-3" style={{ flexShrink: 0 }}>
+                    <Button variant="primary" type="submit" size="lg" className="ms-3" style={{ flexShrink: 0 }} >
                         Confirmar
                     </Button>
                 </Form>
