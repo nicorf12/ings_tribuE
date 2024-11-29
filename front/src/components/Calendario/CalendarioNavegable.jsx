@@ -11,7 +11,7 @@ import {func} from "prop-types";
 
 
 // eslint-disable-next-line react/prop-types
-const CalendarioNavegable = ( {carga , setFecha} ) => {
+const CalendarioNavegable = ( {carga , setFecha, setDeletion} ) => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -27,6 +27,7 @@ const CalendarioNavegable = ( {carga , setFecha} ) => {
 
             if (response.ok) {
                 console.log('Deleted successfully');
+                setDeletion(true);
             } else {
                 console.error('Error deleting');
             }
@@ -38,7 +39,6 @@ const CalendarioNavegable = ( {carga , setFecha} ) => {
 
     const cancelUpdate = () => {
         setShowUpdateModal(false);
-        console.log("b")
     };
 
     const cancelDelete = () => {
@@ -52,7 +52,7 @@ const CalendarioNavegable = ( {carga , setFecha} ) => {
     function handleCargarHoras(e) {
         if (carga == null) {
             e.preventDefault();
-            console.log("a")
+            e.stopPropagation();
             setShowUpdateModal(true);
         }
     }
@@ -125,15 +125,15 @@ const CalendarioNavegable = ( {carga , setFecha} ) => {
                         <FaPencilAlt className="me-4"
                                      style={{ cursor: 'pointer' }}
                         />
-                            {modalUpdate}
                         </Link>
+                        {modalUpdate}
                         <Link>
                         <FaTrash className="me-4"
                                  style={{ cursor: 'pointer' }}
                                  onClick={handleTrashClick}
                         />
-                            {modal}
                         </Link>
+                        {modal}
 
                         <Link to="/dev/carga-horas">
                             <Button>Cargar horas</Button>

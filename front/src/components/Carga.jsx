@@ -13,16 +13,25 @@ const Carga = ({editar,carga}) => {
     const [task, setTask] = useState(null);
     const [hours, setHours] = useState("");
     const navigate = useNavigate();
-
-    const projects_aux = obtenerProyectos();
-    const projects = getProjectSelectList(projects_aux);
-    const tasks = getTasksSelectMap(projects_aux);
+    const [projects, setProjects] = useState([]);
+    const [tasks, setTasks] = useState([]);
     let proyecto;
     let tarea;
     let horas;
     let fecha;
 
     const [fecha_elegida , setFecha] = useState(new Date());
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let projects_aux = await obtenerProyectos();
+            let tareas_aux = await obtenerTareas();
+            setProjects(getProjectSelectList(projects_aux));
+            setTasks(getTasksSelectMap(projects_aux, tareas_aux));
+        };
+        fetchData()
+    }, [])
 
     useEffect(() => {
         if (carga != null) {
@@ -129,14 +138,14 @@ const Carga = ({editar,carga}) => {
         e.preventDefault();
 
         const request = {
-            hours: hours,
+            hours: parseInt(hours),
             date: formatDate(fecha.props.date)
         }
 
-        console.log(JSON.stringify(request))
         try {
-            const response = await fetch(`http://localhost:8080/api/mofify/${carga.id}`, {
+            const response = await fetch(`http://localhost:8080/api/modify/${carga.id}`, {
                 method: 'PUT',
+                body: JSON.stringify(request),
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -228,8 +237,7 @@ const getProjectSelectList = (projects) => {
     return result;
 }
 
-const getTasksSelectMap = (projects) => {
-    const tareas = obtenerTareas();
+const getTasksSelectMap = (projects, tareas) => {
     const result = {}
     projects.forEach((project) => {
         result[project.nombre] = getTasksInProject(tareas, project.id)

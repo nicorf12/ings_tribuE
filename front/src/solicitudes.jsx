@@ -1,4 +1,24 @@
-export function obtenerTareas() {
+export async function obtenerTareas() {
+
+    const url = `http://localhost:8080/psa/tasks`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': "*"
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error al obtener tareas:", error);
+        throw error;
+    }
+    /*
     return [
         {
             "id": "f635b4ca-c091-472c-8b5a-cb3086d1973",
@@ -36,9 +56,29 @@ export function obtenerTareas() {
             "proyectoId": "0d4e3470-4dc8-4fda-a08f-bb822cb9fc7f"
         }
     ];
+    */
 }
 
-export function obtenerProyectos() {
+export async function obtenerProyectos() {
+    const url = `http://localhost:8080/psa/projects`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': "*"
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error al obtener proyectos:", error);
+        throw error;
+    }
+    /*
     return [
         {
             "id": "a6e2167f-67a1-4f60-b9e9-6bae7bc3a15",
@@ -56,6 +96,7 @@ export function obtenerProyectos() {
             "descripcion": "Herramienta para planificar, asignar, y hacer seguimiento a tareas dentro de proyectos. Incluye funcionalidades como la creación de proyectos, asignación de tareas a miembros del equipo, control de tiempos, gestión de recursos, y generación de reportes de progreso."
         }
     ];
+    */
 }
 
 /*
@@ -98,6 +139,7 @@ export async function obtenerCargas() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': "*"
             }
         });
         if (!response.ok) {

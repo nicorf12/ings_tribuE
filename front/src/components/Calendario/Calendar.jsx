@@ -5,14 +5,28 @@ import { useEffect, useState } from "react";
 import "../../../index.css";
 import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../../solicitudes.jsx";
 import {func} from "prop-types";
+import seedrandom from "seedrandom";
 
 const Calendar = ({ setCarga, fecha, setFecha }) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const [cargas, setCargas] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [tasksByDay, setTasksByDay] = useState({});
-    const projects = obtenerProyectos();
-    const tareas = obtenerTareas();
+    const [projects, setProjects] = useState([]);
+    const [tareas, setTareas] = useState([]);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let projects_aux = await obtenerProyectos();
+            let tareas_aux = await obtenerTareas();
+            setProjects(projects_aux);
+            setTareas(tareas_aux)
+        };
+        fetchData()
+    }, [])
+
+    seedrandom('123', { global: true });
 
     // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
     useEffect(() => {
@@ -40,7 +54,7 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
             });
         });
         setTasksByDay(tasks);
-    }, [fecha]); // Esto asegura que se ejecute cada vez que 'fecha' cambie
+    }, [fecha, projects, tareas]); // Esto asegura que se ejecute cada vez que 'fecha' cambie
 
 
     const handleSelected = (task) => {
@@ -73,15 +87,17 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
                     {daysOfWeek.map((day, index) => (
                         <td key={index} className={todayIndex === index ? "bg-light" : ""}>
                             {
-                                (tasksByDay[day] || []).map((task) => (
-                                <Card key={task.id} className={`mb-3 shadow-sm  ${selectedTask === task.id ? 'bg-primary text-white' : ''}`} onClick={() => handleSelected(task)}>
-                                    <Card.Body  style ={{ height:task.hours*65 , display:"flex" , flexDirection:"column" ,justifyContent:"center",textAlign:"center" }}>
+                                (tasksByDay[day] || []).map((task) => {
+                                    console.log(task);
+                                    return (
+                                <Card style={{backgroundColor:`${task.color}`}} key={task.id} className={`mb-3 shadow-sm  ${selectedTask === task.id ? 'bg-primary text-white' : ''}`} onClick={() => handleSelected(task)}>
+                                    <Card.Body  style ={{ height:task.hours*65 , display:"flex" , flexDirection:"column" ,justifyContent:"center",textAlign:"center"}}>
                                         <Card.Title className="mb-1">{task.project}</Card.Title>
                                         <Card.Subtitle className="mb-1 text-muted">{task.task}</Card.Subtitle>
                                         <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>
                                     </Card.Body>
                                 </Card>
-                            ))}
+                            )})}
                         </td>
                     ))}
                 </tr>
@@ -92,20 +108,74 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
 };
 
 const formatCargas = (cargas, tareas, proyectos) => {
+
+    let colors = {};
+    let used_colors = [];
     let cargas_formateadas = [];
     cargas.forEach((carga) => {
         const task = tareas.find((t) => t.id === carga.idTask);
         const project = proyectos.find((p) => p.id === task.proyectoId);
+        let color = "";
+        if (colors.hasOwnProperty(project.id)) {
+            color = colors[project.id];
+        } else {
+            do {
+                color = colorPallete[Math.floor(Math.random() * colorPallete.length)];
+            } while(used_colors.includes(color))
+            used_colors.push(color);
+            colors[project.id] = color
+        }
         cargas_formateadas.push({
             hours: carga.hours,
             task: task.nombre,
             project: project.nombre,
+            color: color,
             date: carga.date,
             id: carga.id
         });
     });
     return cargas_formateadas;
 };
+
+const colorPallete = [
+    "#FF9999",
+    "#FFAA99",
+    "#FFBB99",
+    "#FFCC99",
+    "#FFDD99",
+    "#FFEE99",
+    "#FFFF99",
+    "#EEFF99",
+    "#DDFF99",
+    "#CCFF99",
+    "#BBFF99",
+    "#AAFF99",
+    "#99FF99",
+    "#99FFAA",
+    "#99FFBB",
+    "#99FFCC",
+    "#99FFDD",
+    "#99FFEE",
+    "#99FFFF",
+    "#99EEFF",
+    "#99DDFF",
+    "#99CCFF",
+    "#99BBFF",
+    "#99AAFF",
+    "#9999FF",
+    "#AA99FF",
+    "#BB99FF",
+    "#CC99FF",
+    "#DD99FF",
+    "#EE99FF",
+    "#FF99FF",
+    "#FF99EE",
+    "#FF99DD",
+    "#FF99CC",
+    "#FF99BB",
+    "#FF99AA",
+]
+
 
 const formatDate = (date) => {
     const year = date.getFullYear();
