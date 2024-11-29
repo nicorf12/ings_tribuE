@@ -36,15 +36,11 @@ const NavegadorCostoProyecto = ({setProjects}) => {
         setLoading(true);
         const year = selectedDate.getFullYear();
         const url = `${prodBaseUrl}?year=${year}`;
-        const json = await request(url);
-        //const json = getTestProjects;
+        //const json = await request(url);
+        const json = testProjects;
         (json != null) ? setProjects(json) : setProjects([]);
         if (json != null) setlastYearSearched(selectedDate.getFullYear());
         setLoading(false);
-    }
-
-    const getTestProjects = (url) => {
-        return testProjects;
     }
 
     const searchButton = () => (
