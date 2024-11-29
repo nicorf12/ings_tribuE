@@ -6,6 +6,7 @@ import {Button, Modal} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom"; // Importa Link de react-router-dom
 import "react-datepicker/dist/react-datepicker.css";
 import DatePickerExclude from "../DatePicker/DatePickerExclude.jsx";
+import DatePickerWeek from "../DatePicker/DatePickerWeek.jsx";
 import {useState} from "react";
 import {func} from "prop-types";
 
