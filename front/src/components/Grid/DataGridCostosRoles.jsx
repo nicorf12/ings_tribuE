@@ -153,7 +153,8 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
         <ThemeProvider theme={theme}>
             <Container>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 }}>
-                    {saving && <CircularProgress size={24} sx={{ marginRight: 2, alignSelf: 'center' }} />}                    {actionButton('Guardar', <CheckIcon />, handleConfirm, 'primary', isEditing, 2)}
+                    {saving && <CircularProgress size={24} sx={{ marginRight: 2, alignSelf: 'center' }} />}
+                    {actionButton('Guardar', <CheckIcon />, handleConfirm, 'primary', isEditing, 2)}
                     {actionButton('Cancelar', <CloseIcon />, handleCancel, 'secondary', isEditing)}
                     {actionButton('Editar', <EditIcon />, handleEdit, 'secondary', !isEditing && !isEmpty)}
                 </Box>
