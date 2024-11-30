@@ -59,7 +59,7 @@ const DataGridCostos = ({costos ,meses}) => {
                                         align="center"
                                         sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}
                                     >
-                                        {mes} (g)
+                                        {mes}
                                     </TableCell>
                                 )): (
                                     <TableCell>
