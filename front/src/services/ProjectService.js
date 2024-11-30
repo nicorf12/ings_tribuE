@@ -2,14 +2,18 @@
 import {get} from '../utils/HttpRequest.js';
 
 const baseUrl = {
-    prod: "https://two0242c-is-squad12.onrender.com/finance/projects/reports",
-    test: "http://localhost:9290/finance/projects/reports"
+    projects: {
+        reports: {
+            prod: "https://two0242c-is-squad12.onrender.com/finance/projects/reports",
+            test: "http://localhost:9290/finance/projects/reports"
+        }
+    }
 };
 
 export const getProjects = async (year) => {
     return await testProjects();
     try {
-        const url = `${baseUrl.prod}?year=${year}`;
+        const url = `${baseUrl.projects.reports.prod}?year=${year}`;
         return await get(url);
     } catch (error) {
         console.error("Error getting projects:", error);
