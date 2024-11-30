@@ -4,23 +4,102 @@ import Calendar from "../components/Calendario/Calendar.jsx"
 import CalendarioNavegable from "../components/Calendario/CalendarioNavegable.jsx";
 import {useEffect, useState} from "react";
 import seedrandom from 'seedrandom';
-
+import {useLocation, useNavigate} from "react-router-dom";
+import {toast, ToastContainer} from "react-toastify";
+import {Box, IconButton, Slide} from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import CloseIcon from '@mui/icons-material/Close';
 const PaginaPrincipalDesarrollador = () => {
+    const location = useLocation();
     const [carga, setCarga] = useState(null);
     const [fecha, setFecha] = useState(new Date());
-    const [deletion, setDeletion] = useState(false);
+    const [deletion, setDeletion] = useState("");
+    const [deletionNotif, setDeletionNotif] = useState(deletion !== "");
+    const [additionNotif, setAdditionNotif] = useState(location.state ? location.state === 2 : false);
+    const [editionNotif, setEditionNotif] = useState(location.state ? location.state === 1 : false);
+
     useEffect(() => {
         if (deletion) {
-            window.location.reload();
+            setDeletionNotif(true);
         }
     }, [deletion])
+
+
+    const handleAdditionNotifClose = (e) => {
+        setAdditionNotif(false);
+    }
+    const handleEditionNotifClose = (e) => {
+        setEditionNotif(false);
+    }
+    const handleDeletionNotifClose = (e) => {
+        setDeletionNotif(false);
+    }
+
     return (
         <>
             <Navegador/>
             <div className="">
                 <h2 className="text-center m-3 ">Calendario de Tareas</h2>
-                <CalendarioNavegable carga={carga} setFecha={setFecha}  setDeletion = {setDeletion} />
-                <Calendar setCarga={setCarga} fecha={fecha} setFecha = {setFecha} />
+                <CalendarioNavegable carga={carga} setFecha={setFecha} setDeletion={setDeletion}/>
+                <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion}/>
+                <Snackbar
+                    open={additionNotif}
+                    autoHideDuration={4000}
+                    message="Carga de horas agregada con exito."
+                    onClose={handleAdditionNotifClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: "#4caf50", // Green background color
+                            color: "white", // White text
+                            padding: "8px 16px",
+                            borderRadius: "4px",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                            fontSize: "16px",
+                        }}
+                    >
+                        Carga de horas agregada con exito.
+                    </Box>
+                </Snackbar>
+                <Snackbar
+                    open={editionNotif}
+                    autoHideDuration={4000}
+                    onClose={handleEditionNotifClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: "#4caf50", // Green background color
+                            color: "white", // White text
+                            padding: "8px 16px",
+                            borderRadius: "4px",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                            fontSize: "16px",
+                        }}
+                    >
+                        Carga de horas editada con exito.
+                    </Box>
+                </Snackbar>
+                <Snackbar
+                    open={deletionNotif}
+                    autoHideDuration={4000}
+                    onClose={handleDeletionNotifClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: "#4caf50", // Green background color
+                            color: "white", // White text
+                            padding: "8px 16px",
+                            borderRadius: "4px",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                            fontSize: "16px",
+                        }}
+                    >
+                        Carga de horas eliminada con exito.
+                    </Box>
+                </Snackbar>
             </div>
         </>
     )

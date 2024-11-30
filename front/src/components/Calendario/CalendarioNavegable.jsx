@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePickerExclude from "../DatePicker/DatePickerExclude.jsx";
 
 import {useState} from "react";
+import DatePickerWeek from "../DatePicker/DatePickerWeek.jsx";
 
 
 
@@ -28,7 +29,7 @@ const CalendarioNavegable = ( {carga , setFecha, setDeletion} ) => {
 
             if (response.ok) {
                 console.log('Deleted successfully');
-                setDeletion(true);
+                setDeletion(carga.id);
             } else {
                 console.error('Error deleting');
             }
@@ -118,7 +119,7 @@ const CalendarioNavegable = ( {carga , setFecha, setDeletion} ) => {
     return (
         <Navbar>
             <Container>
-                <DatePickerExclude setFecha={setFecha} />
+                <DatePickerWeek setFecha={setFecha} />
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text className="d-flex align-items-center">

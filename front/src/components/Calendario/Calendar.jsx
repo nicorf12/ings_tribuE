@@ -7,21 +7,22 @@ import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../../solicitude
 import {func} from "prop-types";
 import seedrandom from "seedrandom";
 
-const Calendar = ({ setCarga, fecha, setFecha }) => {
+const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const [cargas, setCargas] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [tasksByDay, setTasksByDay] = useState({});
     const [projects, setProjects] = useState([]);
     const [tareas, setTareas] = useState([]);
-
+    const [loading, setLoading] = useState(true);
+    console.log(cargas);
 
     useEffect(() => {
         const fetchData = async () => {
             let projects_aux = await obtenerProyectos();
             let tareas_aux = await obtenerTareas();
             setProjects(projects_aux);
-            setTareas(tareas_aux)
+            setTareas(tareas_aux);
         };
         fetchData()
     }, [])
@@ -31,12 +32,17 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
     // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             let cargas_aux = await obtenerCargas();
-            setCargas(formatCargas(cargas_aux, tareas, projects));
+            if (deletion) {
+                console.log("se borro " + deletion)
+                cargas_aux = cargas_aux.filter(carga => carga.id !== deletion.id);
+            }
+            cargas_aux = formatCargas(cargas_aux, tareas, projects);
+            setCargas(cargas_aux);
+            setLoading(false);
         };
         fetchData();
-
-        console.log(cargas);
 
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
@@ -54,13 +60,12 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
             });
         });
         setTasksByDay(tasks);
-    }, [fecha, projects, tareas]); // Esto asegura que se ejecute cada vez que 'fecha' cambie
+    }, [fecha, projects, tareas, deletion]);
 
 
     const handleSelected = (task) => {
         setSelectedTask(prevId => (prevId === task.id ? null : task.id));
         setCarga(prevCarga => (prevCarga && prevCarga.id === task.id) ? null : task);
-        console.log(task.id);
     };
 
     const today = new Date(fecha);
@@ -69,6 +74,16 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
     return (
         <Container className="mt-4">
             <Table bordered hover responsive>
+                <colgroup>
+                    <col style={{width: '14%'}}/>
+                    {/* All columns get the same width */}
+                    <col style={{width: '14%'}}/>
+                    <col style={{width: '14%'}}/>
+                    <col style={{width: '14%'}}/>
+                    <col style={{width: '14%'}}/>
+                    <col style={{width: '14%'}}/>
+                    <col style={{width: '14%'}}/>
+                </colgroup>
                 <thead className="bg-primary text-white">
                 <tr>
                     {daysOfWeek.map((day, index) => {
@@ -83,24 +98,76 @@ const Calendar = ({ setCarga, fecha, setFecha }) => {
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    {daysOfWeek.map((day, index) => (
-                        <td key={index} className={todayIndex === index ? "bg-light" : ""}>
-                            {
-                                (tasksByDay[day] || []).map((task) => {
-                                    console.log(task);
-                                    return (
-                                <Card style={{backgroundColor:`${task.color}`}} key={task.id} className={`mb-3 shadow-sm  ${selectedTask === task.id ? 'bg-primary text-white' : ''}`} onClick={() => handleSelected(task)}>
-                                    <Card.Body  style ={{ height:task.hours*65 , display:"flex" , flexDirection:"column" ,justifyContent:"center",textAlign:"center"}}>
-                                        <Card.Title className="mb-1">{task.project}</Card.Title>
-                                        <Card.Subtitle className="mb-1 text-muted">{task.task}</Card.Subtitle>
-                                        <Card.Text className="mb-0">Horas: {task.hours}</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            )})}
+                {loading ? (
+                    <tr>
+                        <td colSpan={daysOfWeek.length} className="text-center">
+                            Cargando...
                         </td>
-                    ))}
-                </tr>
+                    </tr>
+                ) : (
+                    <tr>
+
+                        {daysOfWeek.map((day, index) => (
+                            <td key={index} className={todayIndex === index ? "bg-light" : ""}>
+                                {
+                                    (tasksByDay[day] || []).map((task) => {
+                                        return (
+                                            <Card style={{backgroundColor: `${task.color}`}} key={task.id}
+                                                  className={`mb-3 shadow-sm  ${selectedTask === task.id ? 'bg-primary text-white' : ''}`}
+                                                  onClick={() => handleSelected(task)}>
+                                                <Card.Body style={{
+                                                    width: "100%",
+                                                    overflow: "hidden",
+                                                    height: task.hours * 80,
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    justifyContent: "center",
+                                                    textAlign: "center"
+                                                }}>
+                                                    <Card.Title
+                                                        className="mb-1"
+                                                        style={{
+                                                            display: "-webkit-box",         // Enable the multi-line truncation
+                                                            WebkitBoxOrient: "vertical",    // Stack lines vertically
+                                                            overflow: "hidden",             // Hide overflow
+                                                            textOverflow: "ellipsis",       // Add ellipsis for overflowing content
+                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,             // Limit to 1 line (you can adjust the value if you want more lines)
+                                                            whiteSpace: "normal",           // Allow wrapping to get truncated
+                                                            width: "100%",
+                                                        }}
+                                                        title= {task.hours !== 1 ? task.project : `${task.project}\nDescripción: ${task.task}`}
+                                                    >
+                                                        {task.project}
+                                                    </Card.Title>
+                                                    {task.hours !== 1 && (
+                                                    <Card.Subtitle
+                                                        className="mb-1 text-muted"
+                                                        style={{
+                                                            display: "-webkit-box",         // Enable the multi-line truncation
+                                                            WebkitBoxOrient: "vertical",    // Stack lines vertically
+                                                            overflow: "hidden",             // Hide overflow
+                                                            textOverflow: "ellipsis",       // Add ellipsis for overflowing content
+                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,             // Limit to 1 line (you can adjust the value if you want more lines)
+                                                            whiteSpace: "normal",           // Allow wrapping to get truncated
+                                                            width: "100%",
+                                                        }}
+                                                        title={task.task}
+                                                    >
+                                                        {task.task}
+                                                    </Card.Subtitle>)}
+                                                    <Card.Text
+                                                        className="mb-0"
+                                                    >
+                                                        Horas: {task.hours}
+                                                    </Card.Text>
+                                                </Card.Body>
+                                            </Card>
+                                        )
+                                    })}
+                            </td>
+                        ))}
+                    </tr>
+                )}
                 </tbody>
             </Table>
         </Container>

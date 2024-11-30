@@ -15,6 +15,7 @@ const Carga = ({editar,carga}) => {
     const navigate = useNavigate();
     const [projects, setProjects] = useState([]);
     const [tasks, setTasks] = useState([]);
+    const [validated, setValidated] = useState(false);
     let proyecto;
     let tarea;
     let horas;
@@ -137,6 +138,11 @@ const Carga = ({editar,carga}) => {
     const handleSubmitUpdate = async (e) => {
         e.preventDefault();
 
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+
+        }
+
         const request = {
             hours: parseInt(hours),
             date: formatDate(fecha.props.date)
@@ -153,7 +159,7 @@ const Carga = ({editar,carga}) => {
 
             if (response.ok) {
                 console.log('Form submitted successfully!');
-                navigate('/dev');
+                navigate('/dev', { state: 1 });
             } else {
                 console.error('Error submitting form');
             }
@@ -183,7 +189,7 @@ const Carga = ({editar,carga}) => {
 
             if (response.ok) {
                 console.log('Form submitted successfully!');
-                navigate('/dev');
+                navigate('/dev', { state: 2 });
             } else {
                 console.error('Error submitting form');
             }
@@ -195,7 +201,7 @@ const Carga = ({editar,carga}) => {
     return (
         <Container className="mt-5">
             <h2 className="text-center mb-4">Carga de horas</h2>
-            <Form onSubmit={editar ? handleSubmitUpdate : handleSubmit}>
+            <Form noValidate validated={validated} onSubmit={editar ? handleSubmitUpdate : handleSubmit}>
                 {/* Campo Proyecto */}
                 <Form.Group className="mb-3">
                     <Form.Label>Proyecto</Form.Label>

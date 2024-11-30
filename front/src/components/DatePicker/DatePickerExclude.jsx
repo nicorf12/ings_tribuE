@@ -33,31 +33,7 @@ const DatePickerExclude = ({ date ,setFecha}) => {
     }
   };
 
-  const prevWeek = () => {
-    let newDate = new Date(startDate);
-    newDate.setDate(startDate.getDate() - 7)
-    if (isDateExcluded(newDate)) {
-      return;
-    }
-    setStartDate(newDate);
-    setFecha(newDate);
-  }
-
-  const nextWeek = () => {
-    let newDate = new Date(startDate);
-    newDate.setDate(startDate.getDate() + 7)
-    if (isDateExcluded(newDate)) {
-      return;
-    }
-    setStartDate(newDate);
-    setFecha(newDate);
-  }
   return (
-      <>
-        <FaAngleLeft
-                     style={{ cursor: 'pointer' }}
-                     onClick={prevWeek}
-        />
       <DatePicker
           selected={startDate}
           showIcon
@@ -66,11 +42,6 @@ const DatePickerExclude = ({ date ,setFecha}) => {
           excludeDates={[]} // Aquí puedes agregar fechas específicas para excluir
           placeholderText="Select a date other than tomorrow or a future date"
       />
-        <FaAngleRight
-                     style={{ cursor: 'pointer' }}
-                     onClick={nextWeek}
-        />
-      </>
   );
 };
 
