@@ -96,8 +96,7 @@ const CalendarioNavegable = ( {carga , setFecha, setDeletion} ) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        }
-        else{
+        } else{
             modal = <Modal show={showModal} onHide={cancelDelete}>
                 <Modal.Header >
                     <Modal.Title>Alerta</Modal.Title>

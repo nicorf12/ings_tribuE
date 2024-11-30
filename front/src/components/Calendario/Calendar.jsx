@@ -25,7 +25,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             setTareas(tareas_aux);
         };
         fetchData()
-    }, [])
+    }, [deletion])
 
     seedrandom('123', { global: true });
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Form, Button } from "react-bootstrap";
+import {Container, Form, Button, Modal} from "react-bootstrap";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../solicitudes.jsx";
@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 import DatePickerExclude from "./DatePicker/DatePickerExclude.jsx";
-
+import * as formik from 'formik';
+import * as yup from 'yup';
 const Carga = ({editar,carga}) => {
     const [project, setProject] = useState(null);
     const [task, setTask] = useState(null);
@@ -15,7 +16,7 @@ const Carga = ({editar,carga}) => {
     const navigate = useNavigate();
     const [projects, setProjects] = useState([]);
     const [tasks, setTasks] = useState([]);
-    const [validated, setValidated] = useState(false);
+    const [showInvalidValueAlert, setShowInvalidValueAlert] = useState(null);
     let proyecto;
     let tarea;
     let horas;
@@ -135,12 +136,28 @@ const Carga = ({editar,carga}) => {
     };
 
 
+    const checkForm = (task, hours) => {
+        if (task == null) {
+            return "Por favor selecciona una tarea";
+        }
+        if (isNaN(parseInt(hours))) {
+            return "Por favor agrega una cantidad de horas"
+        }
+        if (parseInt(hours) <= 0) {
+            return "Las horas deben ser mayor a 0";
+        }
+        if (parseInt(hours) > 24) {
+            return "Las horas no pueden ser mayor a 24";
+        }
+        return null;
+    }
+
     const handleSubmitUpdate = async (e) => {
         e.preventDefault();
 
-        const form = e.currentTarget;
-        if (form.checkValidity() === false) {
-
+        let errorMessage = checkForm(task, hours)
+        if (errorMessage !== null) {
+            setShowInvalidValueAlert(errorMessage);
         }
 
         const request = {
@@ -170,11 +187,15 @@ const Carga = ({editar,carga}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let errorMessage = checkForm(task, hours)
+        if (errorMessage !== "") {
+            setShowInvalidValueAlert(errorMessage);
+        }
 
         const request = {
             idResource: "ff14a491-e26d-4092-86ea-d76f20c165d1",
             idTask: task.id,
-            hours: hours,
+            hours: parseInt(hours),
             date: formatDate(fecha.props.date)
         }
         console.log(JSON.stringify(request))
@@ -197,24 +218,60 @@ const Carga = ({editar,carga}) => {
             console.error('Error:', error);
         }
     };
+    const hideAlert = () => {
+        setShowInvalidValueAlert(false);
+    }
+
+    let modal = null;
+    if (showInvalidValueAlert) {
+        modal = <Modal show={showInvalidValueAlert} onHide={hideAlert}>
+            <Modal.Header>
+                <Modal.Title>Formulario invalido</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {showInvalidValueAlert}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={hideAlert}>
+                    Ok
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    }
 
     return (
         <Container className="mt-5">
+            {modal}
             <h2 className="text-center mb-4">Carga de horas</h2>
-            <Form noValidate validated={validated} onSubmit={editar ? handleSubmitUpdate : handleSubmit}>
+            <Form onSubmit={editar ? handleSubmitUpdate : handleSubmit}>
                 {/* Campo Proyecto */}
-                <Form.Group className="mb-3">
+                <Form.Group
+                    className="mb-3"
+                    name="proyecto"
+                >
                     <Form.Label>Proyecto</Form.Label>
                     {proyecto}
                 </Form.Group>
+                <Form.Control.Feedback type="invalid">
+                    Por favor elige un proyecto
+                </Form.Control.Feedback>
 
-                <Form.Group className="mb-3">
+                <Form.Group
+                    className="mb-3"
+                    name="tarea"
+                >
                     <Form.Label>Tarea</Form.Label>
                     {tarea}
                 </Form.Group>
+                <Form.Control.Feedback type="invalid">
+                    Por favor elige una tarea
+                </Form.Control.Feedback>
 
                 {/* Campo Horas */}
-                <Form.Group className="mb-3">
+                <Form.Group
+                    className="mb-3"
+                    name="hours"
+                >
                     <Form.Label>Horas</Form.Label>
                     {horas}
                 </Form.Group>
