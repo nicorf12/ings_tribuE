@@ -17,14 +17,17 @@ const DatePickerMonth = ({ startDate, endDate, setStartDate, setEndDate }) => {
         console.log(endDate);
     }, [endDate]);
 
-    // Generar un array de fechas excluidas
     const generateExcludedDates = () => {
         const excludedDates = [];
         const today = new Date();
         const oneYearFromNow = new Date(today);
         oneYearFromNow.setFullYear(today.getFullYear() + 1);
 
-        for (let d = new Date(today); d <= oneYearFromNow; d.setMonth(d.getMonth() + 1)) {
+        // Empezamos con el próximo mes
+        const startMonth = new Date(today);
+        startMonth.setMonth(today.getMonth() + 1);
+
+        for (let d = new Date(startMonth); d <= oneYearFromNow; d.setMonth(d.getMonth() + 1)) {
             excludedDates.push(new Date(d));
         }
 
@@ -42,6 +45,13 @@ const DatePickerMonth = ({ startDate, endDate, setStartDate, setEndDate }) => {
         setEndDate(newEndDate);
     };
 
+    const filterDate = (date) => {
+        if (!startDateLocal) return true; // Si no hay fecha de inicio, permitir cualquier fecha
+        const maxEndDate = new Date(startDateLocal);
+        maxEndDate.setMonth(startDateLocal.getMonth() + 12); // Sumar 12 meses al inicio
+        return date <= maxEndDate;
+    };
+
     return (
         <DatePicker
             selected={startDateLocal}
@@ -53,6 +63,7 @@ const DatePickerMonth = ({ startDate, endDate, setStartDate, setEndDate }) => {
             excludeDates={generateExcludedDates()}
             showMonthYearPicker
             selectsRange
+            filterDate={filterDate}
         />
     );
 };

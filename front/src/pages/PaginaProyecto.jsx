@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { obtenerProyectos, obtenerCostos } from "../solicitudes.jsx";
 
 // Función para calcular los meses entre dos fechas
-const PaginaProyecto = ({ proyecto_elegido }) => {
+const PaginaProyecto = () => {
     const [costos, setCostos] = useState(null);
     const [proyecto, setProyecto] = useState(null);
     const [meses, setMeses] = useState(null);
