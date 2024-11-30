@@ -31,10 +31,7 @@ const Home = () => {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     {redirectButton('Desarrollador', '/dev')}
-                    {redirectButton('Carga Horas Desarrolladores', '/dev/carga-horas')}
-                    {redirectButton('Editar Tarea', '/dev/editar')}
-                    {redirectButton('Proyectos', '/lider/proyecto')}
-                    {redirectButton('Buscar Proyecto', '/lider')}
+                    {redirectButton('Lider', '/lider')}
                     {redirectButton('Costo de Proyectos', '/costos/proyectos')}
                     {redirectButton('Costo de Roles', '/costos/roles')}
                 </div>
