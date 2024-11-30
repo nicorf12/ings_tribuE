@@ -11,7 +11,7 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import {Box, Button, InputAdornment} from '@mui/material';
+import {Box, Button, CircularProgress, InputAdornment} from '@mui/material';
 import TextField from "@mui/material/TextField";
 import {updateRoles} from "../../services/RolesService.js";
 
@@ -31,8 +31,10 @@ const columnsNames = ["Nivel", "Experiencia", "Costo Por Hora"];
 const DataGridCostosRoles = ({roles, setRoles}) => {
 
     const [editRoles, setEditRoles] = useState(null);
+    const [saving, setSaving] = useState(false);
 
     const isEditing = editRoles !== null;
+    const isEmpty = roles == null || roles.length === 0;
 
 
     const handleEdit = () => {
@@ -40,11 +42,14 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
     };
 
     const handleConfirm = async () => {
+        setSaving(true);
         try {
             await updateRoles(editRoles);
             setRoles(editRoles);
             setEditRoles(null);
         } catch (error) {
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -148,9 +153,9 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
         <ThemeProvider theme={theme}>
             <Container>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 }}>
-                    {actionButton('Guardar', <CheckIcon />, handleConfirm, 'primary', isEditing, 2)}
+                    {saving && <CircularProgress size={24} sx={{ marginRight: 2, alignSelf: 'center' }} />}                    {actionButton('Guardar', <CheckIcon />, handleConfirm, 'primary', isEditing, 2)}
                     {actionButton('Cancelar', <CloseIcon />, handleCancel, 'secondary', isEditing)}
-                    {actionButton('Editar', <EditIcon />, handleEdit, 'secondary', !isEditing)}
+                    {actionButton('Editar', <EditIcon />, handleEdit, 'secondary', !isEditing && !isEmpty)}
                 </Box>
                 <TableContainer component={Paper} sx={{backgroundColor: 'secondary.main', padding: 2}}>
                     <Table sx={{minWidth: 600}} aria-label="tabla de costos">
