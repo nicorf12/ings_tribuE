@@ -27,7 +27,7 @@ const NavegadorCostoRoles = ({setRoles}) => {
         const month = selectedDate.getMonth();
         const responseJson = await getRoles(year, month);
         (responseJson != null) ? setRoles(responseJson) : setRoles([]);
-        if (responseJson != null) setLastSelectedDate(selectedDate.getFullYear());
+        if (responseJson != null) setLastSelectedDate(selectedDate);
         setLoading(false);
     }
 
