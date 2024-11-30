@@ -8,8 +8,14 @@ const baseUrl = {
 
 export const getProjects = async (year) => {
     return await testProjects();
-    const url = `${baseUrl.prod}?year=${year}`;
-    return await get(url);
+    try {
+        const url = `${baseUrl.prod}?year=${year}`;
+        return await get(url);
+    } catch (error) {
+        console.error("Error getting projects:", error);
+        alert("Error obteniendo los proyectos. Por favor, intente nuevamente mas tarde.");
+        return null;
+    }
 };
 
 

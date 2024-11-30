@@ -1,15 +1,40 @@
 // src/services/ProjectService.js
 import {get} from '../utils/HttpRequest.js';
+import {put} from '../utils/HttpRequest';
 
 const baseUrl = {
-    prod: "https://two0242c-is-squad12.onrender.com/finance/incomes",
-    test: "http://localhost:9290/finance/projects/incomes"
+    getIncomes: {
+        prod: "https://two0242c-is-squad12.onrender.com/finance/incomes",
+        test: "http://localhost:9290/finance/projects/incomes"
+    },
+    saveIncomes: {
+        prod: "https://two0242c-is-squad12.onrender.com/finance/incomes",
+        test: "http://localhost:9290/finance/projects/incomes"
+    }
 };
 
 export const getRoles = async (year, month) => {
     return await testRoles();
-    const url = `${baseUrl.prod}?year=${year}&month=${month}`;
-    return await get(url);
+    try {
+        const url = `${baseUrl.prod}?year=${year}&month=${month}`;
+        return await get(url);
+    } catch (error) {
+        console.error("Error getting roles:", error);
+        alert("Error obteniendo los roles. Por favor, intente nuevamente mas tarde.");
+        return null;
+    }
+};
+
+
+export const updateRoles = async (roles) => {
+    try {
+        const url = baseUrl.saveIncomes.prod;
+        return await put(url, roles);
+    } catch (error) {
+        console.error("Error updating roles:", error);
+        alert("Error actualizando los roles. Por favor, intente nuevamente mas tarde.");
+        throw error;
+    }
 };
 
 

@@ -13,6 +13,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import {Box, Button, InputAdornment} from '@mui/material';
 import TextField from "@mui/material/TextField";
+import {updateRoles} from "../../services/RolesService.js";
 
 const theme = createTheme({
     palette: {
@@ -38,9 +39,13 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
         setEditRoles(roles)
     };
 
-    const handleConfirm = () => {
-        setRoles(editRoles);
-        setEditRoles(null);
+    const handleConfirm = async () => {
+        try {
+            await updateRoles(editRoles);
+            setRoles(editRoles);
+            setEditRoles(null);
+        } catch (error) {
+        }
     };
 
     const handleCancel = () => {
