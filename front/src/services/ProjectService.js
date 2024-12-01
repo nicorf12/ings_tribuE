@@ -11,7 +11,7 @@ const baseUrl = {
 };
 
 export const getProjects = async (year) => {
-    return await testProjects();
+    //return await testProjects();
     try {
         const url = `${baseUrl.projects.reports.prod}?year=${year}`;
         return await get(url);

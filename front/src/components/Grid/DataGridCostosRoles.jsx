@@ -36,7 +36,6 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
     const isEditing = editRoles !== null;
     const isEmpty = roles == null || roles.length === 0;
 
-
     const handleEdit = () => {
         setEditRoles(roles)
     };
@@ -81,7 +80,7 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
     const drawColumnsHeader = () => (
         columnsNames.map((nombre, index) => (
             <TableCell
-                key={index}
+                key={`${nombre}-${index}`}
                 align="center"
                 sx={{backgroundColor: '#1976d2', color: 'white', textAlign: 'center', maxWidth: 100}}
             >
@@ -96,14 +95,14 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
         </TableRow>
     );
 
-    const drawLevelValue = (row) => (
-        <TableCell component="th" scope="row" sx={{color: 'text.primary', textAlign: 'center'}}>
+    const drawLevelValue = (row, key) => (
+        <TableCell component="th" scope="row" sx={{color: 'text.primary', textAlign: 'center'}} key={`level-${key}`}>
             {row.role.name}
         </TableCell>
     );
 
-    const drawExperienceValue = (row) => (
-        <TableCell align="center" sx={{color: 'text.primary', textAlign: 'center'}}>
+    const drawExperienceValue = (row, key) => (
+        <TableCell align="center" sx={{color: 'text.primary', textAlign: 'center'}} key = {`exp-${key}`}>
             {row.role.experience}
         </TableCell>
     );
@@ -123,8 +122,8 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
         />
     );
 
-    const drawIncomeValue = (role, roleIndex) => (
-        <TableCell align="center" sx={{color: 'text.primary', textAlign: 'center', maxWidth: 80}}>
+    const drawIncomeValue = (role, roleIndex, key) => (
+        <TableCell align="center" sx={{color: 'text.primary', textAlign: 'center', maxWidth: 80}} key={`income-${key}`}>
             {isEditing ? (
                 drawIncomeEditBox(role, roleIndex)
             ) : (
@@ -133,20 +132,24 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
         </TableCell>
     );
 
-    const drawBody = () => (
-        roles.map((role, roleIndex) => (
-            <TableRow
-                key={role.id}
-                sx={{
-                    backgroundColor: roleIndex % 2 === 0 ? 'secondary.main' : 'white',
-                }}
-            >
-                {drawLevelValue(role)}
-                {drawExperienceValue(role)}
-                {drawIncomeValue(role, roleIndex)}
-            </TableRow>
-        ))
-    );
+    const drawBody = () => {
+        const body = roles.map((role, roleIndex) => {
+            const key = `${role.role.id}-${role.role.name}-${role.role.experience}-${role.month}-${role.year}`;
+            return (
+                <TableRow
+                    key={`row-${key}`}
+                    sx={{
+                        backgroundColor: roleIndex % 2 === 0 ? 'secondary.main' : 'white',
+                    }}
+                >
+                    {drawLevelValue(role, key)}
+                    {drawExperienceValue(role, key)}
+                    {drawIncomeValue(role, roleIndex, key)}
+                </TableRow>
+            );
+        });
+        return body;
+    };
 
 // Table
     return (

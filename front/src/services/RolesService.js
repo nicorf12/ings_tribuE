@@ -14,7 +14,7 @@ const baseUrl = {
 };
 
 export const getRoles = async (year, month) => {
-    return await testRoles();
+    //return await testRoles();
     try {
         const url = `${baseUrl.getIncomes.prod}?year=${year}&month=${month}`;
         return await get(url);
@@ -28,8 +28,13 @@ export const getRoles = async (year, month) => {
 
 export const updateRoles = async (roles) => {
     try {
+        const transformedRoles = roles.map(role => ({
+            ...role,
+            roleId: role.role.id,
+        }));
+        console.log("transformedRoles", transformedRoles);
         const url = baseUrl.saveIncomes.prod;
-        return await put(url, roles);
+        return await put(url, transformedRoles);
     } catch (error) {
         console.error("Error updating roles:", error);
         alert("Error actualizando los roles. Por favor, intente nuevamente mas tarde.");

@@ -24,8 +24,9 @@ const NavegadorCostoRoles = ({setRoles}) => {
     const handleSearch = async () => {
         setLoading(true);
         const year = selectedDate.getFullYear();
-        const month = selectedDate.getMonth();
+        const month = selectedDate.getMonth() + 1;
         const responseJson = await getRoles(year, month);
+        setRoles([]);
         (responseJson != null) ? setRoles(responseJson) : setRoles([]);
         if (responseJson != null) setLastSelectedDate(selectedDate);
         setLoading(false);
