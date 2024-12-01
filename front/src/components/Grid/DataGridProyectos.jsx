@@ -23,7 +23,7 @@ const theme = createTheme({
 });
 
 // Componente DataGridProyectos
-const DataGridProyectos = ({ proyectos, onSelect }) => {
+const DataGridProyectos = ({ proyectos }) => {
 
     return (
         <ThemeProvider theme={theme}>
