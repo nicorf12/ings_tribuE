@@ -28,6 +28,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 tareas_aux = await obtenerTareas();
             } catch (e) {
                 setError(e)
+                setLoading(false);
                 return;
             }
             setProjects(projects_aux);
@@ -85,6 +86,10 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
 
 
     const handleSelected = (task) => {
+        console.log(deletion)
+        if (deletion !== null) {
+            return;
+        }
         setSelectedTask(prevId => (prevId === task.id ? null : task.id));
         setCarga(prevCarga => (prevCarga && prevCarga.id === task.id) ? null : task);
     };
@@ -125,9 +130,8 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                             Hubo un error. Vuelve a intentarlo más tarde.
                         </td>
                     </tr>
-                ) : ( <>
-                </>)}
-                {loading ? (
+                ) :
+                loading ? (
                     <tr>
                         <td colSpan={daysOfWeek.length} className="text-center">
                             Cargando...

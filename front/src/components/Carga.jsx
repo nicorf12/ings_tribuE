@@ -36,9 +36,6 @@ const Carga = ({editar,carga}) => {
 
 
 
-    useEffect(() => {
-
-    }, [error])
 
 
     useEffect(() => {
@@ -192,6 +189,9 @@ const Carga = ({editar,carga}) => {
     }
 
     const handleSubmitUpdate = async (e) => {
+        if (loading) {
+            return;
+        }
         e.preventDefault();
 
         let errorMessage = checkForm()
@@ -217,8 +217,9 @@ const Carga = ({editar,carga}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         let errorMessage = checkForm()
-        if (errorMessage !== "") {
+        if (errorMessage !== null) {
             setShowInvalidValueAlert(errorMessage);
+
             return;
         }
 
@@ -305,7 +306,7 @@ const Carga = ({editar,carga}) => {
                     {fecha}
 
                 {/* Botón Confirmar */}
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" disabled={loading}>
                     Confirmar
                 </Button>
 

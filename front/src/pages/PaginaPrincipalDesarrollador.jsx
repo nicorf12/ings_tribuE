@@ -13,8 +13,8 @@ const PaginaPrincipalDesarrollador = () => {
     const location = useLocation();
     const [carga, setCarga] = useState(null);
     const [fecha, setFecha] = useState(new Date());
-    const [deletion, setDeletion] = useState("");
-    const [deletionNotif, setDeletionNotif] = useState(deletion !== "");
+    const [deletion, setDeletion] = useState(null);
+    const [deletionNotif, setDeletionNotif] = useState(deletion !== null);
     const [additionNotif, setAdditionNotif] = useState(location.state ? location.state === 2 : false);
     const [editionNotif, setEditionNotif] = useState(location.state ? location.state === 1 : false);
     const [error, setError] = useState(null);
@@ -23,7 +23,9 @@ const PaginaPrincipalDesarrollador = () => {
 
     useEffect(() => {
         if (deletion) {
+            setDeletion(null);
             setDeletionNotif(true);
+            setCarga(null);
         }
     }, [deletion])
 
@@ -129,7 +131,7 @@ const PaginaPrincipalDesarrollador = () => {
                     >
                         Hubo un error al eliminar la carga. Vuelve a intentarlo más tarde.
                     </Box>
-                </Snackbar>;
+                </Snackbar>
                 <Snackbar
                     open={loading}
                     autoHideDuration={10000}
@@ -148,7 +150,7 @@ const PaginaPrincipalDesarrollador = () => {
                     >
                         Eliminando carga...
                     </Box>
-                </Snackbar>;
+                </Snackbar>
             </div>
         </>
     )
