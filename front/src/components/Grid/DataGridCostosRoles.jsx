@@ -26,8 +26,11 @@ const theme = createTheme({
     },
 });
 
-const columnsNames = ["Nivel", "Experiencia", "Costo Por Hora"];
-
+const columns = [
+    { name: "Nivel", width: '35%' },
+    { name: "Experiencia", width: '35%' },
+    { name: "Costo Por Hora", width: '30%' }
+];
 const DataGridCostosRoles = ({roles, setRoles}) => {
 
     const [editRoles, setEditRoles] = useState(null);
@@ -78,15 +81,17 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
     );
 
     const drawColumnsHeader = () => (
-        columnsNames.map((nombre, index) => (
-            <TableCell
-                key={`${nombre}-${index}`}
-                align="center"
-                sx={{backgroundColor: '#1976d2', color: 'white', textAlign: 'center', maxWidth: 100}}
-            >
-                {nombre}
-            </TableCell>
-        ))
+        <>
+            {columns.map((column, index) => (
+                <TableCell
+                    key={`${column.name}-${index}`}
+                    align="center"
+                    sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center', width: column.width }}
+                >
+                    {column.name}
+                </TableCell>
+            ))}
+        </>
     );
 
     const drawHeader = () => (
@@ -123,7 +128,7 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
     );
 
     const drawIncomeValue = (role, roleIndex, key) => (
-        <TableCell align="center" sx={{color: 'text.primary', textAlign: 'center', maxWidth: 80}} key={`income-${key}`}>
+        <TableCell align="center" sx={{color: 'text.primary', textAlign: 'center', whiteSpace: 'nowrap'}} key={`income-${key}`}>
             {isEditing ? (
                 drawIncomeEditBox(role, roleIndex)
             ) : (
@@ -133,7 +138,7 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
     );
 
     const drawBody = () => {
-        const body = roles.map((role, roleIndex) => {
+        return roles.map((role, roleIndex) => {
             const key = `${role.role.id}-${role.role.name}-${role.role.experience}-${role.month}-${role.year}`;
             return (
                 <TableRow
@@ -148,7 +153,6 @@ const DataGridCostosRoles = ({roles, setRoles}) => {
                 </TableRow>
             );
         });
-        return body;
     };
 
 // Table
