@@ -15,35 +15,30 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
     const [projects, setProjects] = useState([]);
     const [tareas, setTareas] = useState([]);
     const [loading, setLoading] = useState(true);
-    console.log(cargas);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        setLoading(true);
         const fetchData = async () => {
-            let projects_aux = await obtenerProyectos();
-            let tareas_aux = await obtenerTareas();
+            let projects_aux
+            let tareas_aux
+            try {
+                projects_aux = await obtenerProyectos();
+                tareas_aux = await obtenerTareas();
+            } catch (e) {
+                setError(error)
+                return;
+            }
             setProjects(projects_aux);
             setTareas(tareas_aux);
         };
-        fetchData()
-    }, [deletion])
+        fetchData();
+    }, [])
 
     seedrandom('123', { global: true });
 
-    // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            let cargas_aux = await obtenerCargas();
-            if (deletion) {
-                console.log("se borro " + deletion)
-                cargas_aux = cargas_aux.filter(carga => carga.id !== deletion.id);
-            }
-            cargas_aux = formatCargas(cargas_aux, tareas, projects);
-            setCargas(cargas_aux);
-            setLoading(false);
-        };
-        fetchData();
 
+    useEffect(() => {
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
         const endOfWeek = new Date(startOfWeek);
@@ -60,7 +55,32 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             });
         });
         setTasksByDay(tasks);
-    }, [fecha, projects, tareas, deletion]);
+    }, [fecha, cargas])
+
+    // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
+    useEffect(() => {
+        if (tareas.length === 0) {
+            return;
+        }
+        if (deletion) {
+            setCargas(cargas.filter(carga => carga.id !== deletion.id));
+        }
+        const fetchData = async () => {
+
+            let cargas_aux;
+            try {
+                cargas_aux = await obtenerCargas();
+            } catch (e) {
+                setError(error)
+                return;
+            } finally {
+                setLoading(false);
+            }
+            cargas_aux = formatCargas(cargas_aux, tareas, projects);
+            setCargas(cargas_aux);
+        };
+        fetchData();
+    }, [tareas, deletion]);
 
 
     const handleSelected = (task) => {

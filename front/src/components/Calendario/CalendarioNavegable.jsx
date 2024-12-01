@@ -9,32 +9,25 @@ import DatePickerExclude from "../DatePicker/DatePickerExclude.jsx";
 
 import {useState} from "react";
 import DatePickerWeek from "../DatePicker/DatePickerWeek.jsx";
+import {eliminarCarga} from "../../solicitudes.jsx";
 
 
 
 // eslint-disable-next-line react/prop-types
-const CalendarioNavegable = ( {carga , setFecha, setDeletion} ) => {
-    const navigate = useNavigate();
+const CalendarioNavegable = ( {carga , setFecha, setDeletion, setError, setLoading} ) => {
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
+
     const confirmDelete = async () => {
         setShowModal(false);
+        setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/api/delete/${carga.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                console.log('Deleted successfully');
-                setDeletion(carga.id);
-            } else {
-                console.error('Error deleting');
-            }
-        } catch (error) {
-            console.error('Error:', error);
+            await eliminarCarga(carga)
+            setDeletion(carga.id)
+        } catch (e) {
+            setError(e);
+        } finally {
+            setLoading(false);
         }
 
     };

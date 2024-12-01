@@ -17,12 +17,16 @@ const PaginaPrincipalDesarrollador = () => {
     const [deletionNotif, setDeletionNotif] = useState(deletion !== "");
     const [additionNotif, setAdditionNotif] = useState(location.state ? location.state === 2 : false);
     const [editionNotif, setEditionNotif] = useState(location.state ? location.state === 1 : false);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
         if (deletion) {
             setDeletionNotif(true);
         }
     }, [deletion])
+
 
 
     const handleAdditionNotifClose = (e) => {
@@ -35,12 +39,19 @@ const PaginaPrincipalDesarrollador = () => {
         setDeletionNotif(false);
     }
 
+    const handleErrorNotifClose = (e) => {
+        setError(null);
+    }
+    const handleLoadingNotifClose = (e) => {
+        setLoading(false);
+    }
+
     return (
         <>
             <Navegador/>
             <div className="">
                 <h2 className="text-center m-3 ">Calendario de Tareas</h2>
-                <CalendarioNavegable carga={carga} setFecha={setFecha} setDeletion={setDeletion}/>
+                <CalendarioNavegable carga={carga} setFecha={setFecha} setDeletion={setDeletion} setError={setError} setLoading={setLoading}/>
                 <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion}/>
                 <Snackbar
                     open={additionNotif}
@@ -100,6 +111,44 @@ const PaginaPrincipalDesarrollador = () => {
                         Carga de horas eliminada con exito.
                     </Box>
                 </Snackbar>
+                <Snackbar
+                    open={error != null}
+                    autoHideDuration={4000}
+                    onClose={handleErrorNotifClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: "#FF4C4C", // Green background color
+                            color: "white", // White text
+                            padding: "8px 16px",
+                            borderRadius: "4px",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                            fontSize: "16px",
+                        }}
+                    >
+                        Hubo un error al eliminar la carga. Vuelve a intentarlo más tarde.
+                    </Box>
+                </Snackbar>;
+                <Snackbar
+                    open={loading}
+                    autoHideDuration={10000}
+                    onClose={handleLoadingNotifClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: "#A6A6A6",
+                            color: "white",
+                            padding: "8px 16px",
+                            borderRadius: "4px",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                            fontSize: "16px",
+                        }}
+                    >
+                        Eliminando carga...
+                    </Box>
+                </Snackbar>;
             </div>
         </>
     )

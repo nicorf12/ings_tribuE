@@ -27,19 +27,6 @@ function createData(name, ...values) {
 
 // Componente DataGridCostos
 const DataGridCostos = ({costos ,meses}) => {
-    // Crear filas de ejemplo (puedes modificar esto según tus datos)
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0),
-        createData('Ice cream sandwich', 237, 9.0),
-        createData('Eclair', 262, 16.0),
-        createData('Cupcake', 305, 3.7),
-        createData('Gingerbread', 356, 16.0),
-    ];
-
-
-
-
-
     return (
         <ThemeProvider theme={theme}>
             <Container>
@@ -75,9 +62,9 @@ const DataGridCostos = ({costos ,meses}) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row, rowIndex) => (
+                            {Object.keys(costos).map((key, rowIndex) => (
                                 <TableRow
-                                    key={row.name}
+                                    key={key}
                                     sx={{
                                         backgroundColor: rowIndex % 2 === 0 ? 'secondary.main' : 'white',
                                     }}
@@ -87,9 +74,9 @@ const DataGridCostos = ({costos ,meses}) => {
                                         scope="row"
                                         sx={{ color: 'text.primary', textAlign: 'center' }}
                                     >
-                                        {row.name}
+                                        {key}
                                     </TableCell>
-                                    {row.values.map((value, index) => (
+                                    {Object.values(costos)[rowIndex].map((value, index) => (
                                         <TableCell
                                             key={index}
                                             align="center"
@@ -102,7 +89,7 @@ const DataGridCostos = ({costos ,meses}) => {
                                         align="center"
                                         sx={{ color: 'text.primary', textAlign: 'center' }}
                                     >
-                                        {row.values.reduce((a, b) => a + b, 0)}
+                                        {costos[key].reduce((a, b) => a + b, 0)}
                                     </TableCell>
                                 </TableRow>
                             ))}

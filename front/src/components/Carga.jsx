@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import {Container, Form, Button, Modal} from "react-bootstrap";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../solicitudes.jsx";
+import { obtenerTareas, obtenerProyectos, obtenerCargas, modificarCarga, agregarCarga } from "../solicitudes.jsx";
 import { useNavigate } from 'react-router-dom';
 
 
 import DatePickerExclude from "./DatePicker/DatePickerExclude.jsx";
-import * as formik from 'formik';
-import * as yup from 'yup';
+import Snackbar from "@mui/material/Snackbar";
+import {Box} from "@mui/material";
 const Carga = ({editar,carga}) => {
     const [project, setProject] = useState(null);
     const [task, setTask] = useState(null);
@@ -17,6 +17,8 @@ const Carga = ({editar,carga}) => {
     const [projects, setProjects] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [showInvalidValueAlert, setShowInvalidValueAlert] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     let proyecto;
     let tarea;
     let horas;
@@ -26,9 +28,21 @@ const Carga = ({editar,carga}) => {
 
 
     useEffect(() => {
+
+    }, [error])
+
+
+    useEffect(() => {
         const fetchData = async () => {
-            let projects_aux = await obtenerProyectos();
-            let tareas_aux = await obtenerTareas();
+            let projects_aux;
+            let tareas_aux;
+            try {
+                projects_aux = await obtenerProyectos();
+                tareas_aux = await obtenerTareas();
+            } catch (e) {
+                setError(e);
+            }
+
             setProjects(getProjectSelectList(projects_aux));
             setTasks(getTasksSelectMap(projects_aux, tareas_aux));
         };
@@ -89,7 +103,8 @@ const Carga = ({editar,carga}) => {
             date={fecha_elegida}
             setFecha={setFecha}
         />
-    } else {
+    }
+    else {
         proyecto = <Autocomplete
             options={projects}
             value={project}
@@ -128,6 +143,13 @@ const Carga = ({editar,carga}) => {
         />
     }
 
+    const handleErrorNotifClose = () => {
+        setError(null);
+    }
+    const handleLoadingNotifClose = () => {
+        setLoading(false);
+    }
+
     const formatDate = (date) => {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -136,9 +158,14 @@ const Carga = ({editar,carga}) => {
     };
 
 
-    const checkForm = (task, hours) => {
-        if (task == null) {
-            return "Por favor selecciona una tarea";
+    const checkForm = () => {
+        if (!editar) {
+            if (project == null) {
+                return "Por favor selecciona un proyecto";
+            }
+            if (task == null) {
+                return "Por favor selecciona una tarea";
+            }
         }
         if (isNaN(parseInt(hours))) {
             return "Por favor agrega una cantidad de horas"
@@ -155,39 +182,28 @@ const Carga = ({editar,carga}) => {
     const handleSubmitUpdate = async (e) => {
         e.preventDefault();
 
-        let errorMessage = checkForm(task, hours)
+        let errorMessage = checkForm()
         if (errorMessage !== null) {
             setShowInvalidValueAlert(errorMessage);
         }
-
         const request = {
             hours: parseInt(hours),
             date: formatDate(fecha.props.date)
         }
-
+        setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/api/modify/${carga.id}`, {
-                method: 'PUT',
-                body: JSON.stringify(request),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                console.log('Form submitted successfully!');
-                navigate('/dev', { state: 1 });
-            } else {
-                console.error('Error submitting form');
-            }
-        } catch (error) {
-            console.error('Error:', error);
+            await modificarCarga(carga, request);
+            navigate('/dev', { state: 1 });
+        } catch (e) {
+            setError(e);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let errorMessage = checkForm(task, hours)
+        let errorMessage = checkForm()
         if (errorMessage !== "") {
             setShowInvalidValueAlert(errorMessage);
         }
@@ -198,29 +214,22 @@ const Carga = ({editar,carga}) => {
             hours: parseInt(hours),
             date: formatDate(fecha.props.date)
         }
-        console.log(JSON.stringify(request))
+        setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/api/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request),
-            });
-
-            if (response.ok) {
-                console.log('Form submitted successfully!');
-                navigate('/dev', { state: 2 });
-            } else {
-                console.error('Error submitting form');
-            }
-        } catch (error) {
-            console.error('Error:', error);
+            await agregarCarga(request);
+            navigate('/dev', { state: 2 });
+        } catch (e) {
+            setError(e);
+        } finally {
+            setLoading(false);
         }
     };
+
     const hideAlert = () => {
         setShowInvalidValueAlert(false);
     }
+
+
 
     let modal = null;
     if (showInvalidValueAlert) {
@@ -288,6 +297,45 @@ const Carga = ({editar,carga}) => {
 
                 </div>
             </Form>
+
+            <Snackbar
+                open={error != null}
+                autoHideDuration={4000}
+                onClose={handleErrorNotifClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Box
+                    sx={{
+                        backgroundColor: "#FF4C4C",
+                        color: "white",
+                        padding: "8px 16px",
+                        borderRadius: "4px",
+                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                        fontSize: "16px",
+                    }}
+                >
+                    Hubo un error al eliminar la carga. Vuelve a intentarlo más tarde.
+                </Box>
+            </Snackbar>
+            <Snackbar
+                open={loading}
+                autoHideDuration={10000}
+                onClose={handleLoadingNotifClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Box
+                    sx={{
+                        backgroundColor: "#A6A6A6",
+                        color: "white",
+                        padding: "8px 16px",
+                        borderRadius: "4px",
+                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                        fontSize: "16px",
+                    }}
+                >
+                    Enviando formulario...
+                </Box>
+            </Snackbar>
         </Container>
     );
 };
