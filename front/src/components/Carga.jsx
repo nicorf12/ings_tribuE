@@ -2,13 +2,19 @@ import { useState, useEffect } from 'react';
 import {Container, Form, Button, Modal} from "react-bootstrap";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { obtenerTareas, obtenerProyectos, obtenerCargas, modificarCarga, agregarCarga } from "../solicitudes.jsx";
+import { obtenerTareas, obtenerProyectos,  modificarCarga, agregarCarga } from "../solicitudes.jsx";
 import { useNavigate } from 'react-router-dom';
 
 
 import DatePickerExclude from "./DatePicker/DatePickerExclude.jsx";
 import Snackbar from "@mui/material/Snackbar";
 import {Box} from "@mui/material";
+
+
+
+
+
+
 const Carga = ({editar,carga}) => {
     const [project, setProject] = useState(null);
     const [task, setTask] = useState(null);
@@ -25,6 +31,9 @@ const Carga = ({editar,carga}) => {
     let fecha;
 
     const [fecha_elegida , setFecha] = useState(new Date());
+    const [excludeFilter] = useState(true);
+
+
 
 
     useEffect(() => {
@@ -102,6 +111,8 @@ const Carga = ({editar,carga}) => {
         fecha = <DatePickerExclude
             date={fecha_elegida}
             setFecha={setFecha}
+            excludeDates ={excludeFilter}
+
         />
     }
     else {
@@ -140,6 +151,7 @@ const Carga = ({editar,carga}) => {
         fecha = <DatePickerExclude
             date={fecha_elegida}
             setFecha={setFecha}
+            excludeDates={excludeFilter}
         />
     }
 
