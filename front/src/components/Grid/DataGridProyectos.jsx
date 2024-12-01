@@ -7,6 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {Link} from "react-router-dom";
 
 const theme = createTheme({
     palette: {
@@ -76,7 +77,7 @@ const DataGridProyectos = ({ proyectos }) => {
                                     align="center"
                                     sx={{ color: 'text.primary', textAlign: 'center' }}
                                 >
-                                    <a href="#" style={{ color: '#1976d2', textDecoration: 'none' }}>Ir</a>
+                                    <Link to={"/lider/proyecto"} state={proyecto} style={{ color: '#1976d2', textDecoration: 'none' }}>Ir</Link>
                                 </TableCell>
                             </TableRow>
                         ))}

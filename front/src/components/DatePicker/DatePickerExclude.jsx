@@ -1,8 +1,9 @@
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from "react";
+import {FaAngleLeft, FaAngleRight, FaPencilAlt} from "react-icons/fa";
 
-const DatePickerExclude = ({ date }) => {
+const DatePickerExclude = ({ date ,setFecha}) => {
   const [startDate, setStartDate] = useState(new Date());
 
   useEffect(() => {
@@ -25,11 +26,18 @@ const DatePickerExclude = ({ date }) => {
     return date >= tomorrow;
   };
 
+  const handleChange = (date) =>{
+    setStartDate(date);
+    if (date){
+      setFecha(date);
+    }
+  };
+
   return (
       <DatePicker
           selected={startDate}
           showIcon
-          onChange={(date) => setStartDate(date)}
+          onChange={handleChange}
           filterDate={(date) => !isDateExcluded(date)} // Filtrar las fechas
           excludeDates={[]} // Aquí puedes agregar fechas específicas para excluir
           placeholderText="Select a date other than tomorrow or a future date"

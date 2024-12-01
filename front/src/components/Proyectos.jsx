@@ -3,6 +3,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import DataGridProyectos from "./Grid/DataGridProyectos.jsx";
+import {useNavigate} from "react-router-dom";
 
 const Proyectos = () => {
     // Inicializa el estado de projects con los datos de los proyectos
@@ -24,12 +25,20 @@ const Proyectos = () => {
         }
     ]);
 
+    const navigate = useNavigate();
+
     const [project, setProject] = useState(null); // Para almacenar el proyecto seleccionado
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("Proyecto seleccionado:", project);
+        navigate("/lider/proyecto", {state: project})
     };
+
+
+
+
 
     return (
         <Container className="mt-5">

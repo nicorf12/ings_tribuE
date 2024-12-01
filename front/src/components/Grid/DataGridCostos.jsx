@@ -25,20 +25,8 @@ function createData(name, ...values) {
     return { name, values };
 }
 
-// Meses
-const meses = ["Enero 2024", "Febrero 2024"];
-
 // Componente DataGridCostos
-const DataGridCostos = () => {
-    // Crear filas de ejemplo (puedes modificar esto según tus datos)
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0),
-        createData('Ice cream sandwich', 237, 9.0),
-        createData('Eclair', 262, 16.0),
-        createData('Cupcake', 305, 3.7),
-        createData('Gingerbread', 356, 16.0),
-    ];
-
+const DataGridCostos = ({costos ,meses}) => {
     return (
         <ThemeProvider theme={theme}>
             <Container>
@@ -51,15 +39,20 @@ const DataGridCostos = () => {
                                 >
                                     Recurso
                                 </TableCell>
-                                {meses.map((mes, index) => (
+
+                                { meses ? meses.map((mes, index) => (
                                     <TableCell
                                         key={index}
                                         align="center"
                                         sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}
                                     >
-                                        {mes} (g)
+                                        {mes}
                                     </TableCell>
-                                ))}
+                                )): (
+                                    <TableCell>
+                                        No hay meses
+                                    </TableCell>
+                                )}
                                 <TableCell
                                     align="center"
                                     sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}
@@ -69,9 +62,9 @@ const DataGridCostos = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row, rowIndex) => (
+                            {Object.keys(costos).map((key, rowIndex) => (
                                 <TableRow
-                                    key={row.name}
+                                    key={key}
                                     sx={{
                                         backgroundColor: rowIndex % 2 === 0 ? 'secondary.main' : 'white',
                                     }}
@@ -81,9 +74,9 @@ const DataGridCostos = () => {
                                         scope="row"
                                         sx={{ color: 'text.primary', textAlign: 'center' }}
                                     >
-                                        {row.name}
+                                        {key}
                                     </TableCell>
-                                    {row.values.map((value, index) => (
+                                    {Object.values(costos)[rowIndex].map((value, index) => (
                                         <TableCell
                                             key={index}
                                             align="center"
@@ -96,7 +89,7 @@ const DataGridCostos = () => {
                                         align="center"
                                         sx={{ color: 'text.primary', textAlign: 'center' }}
                                     >
-                                        {row.values.reduce((a, b) => a + b, 0)}
+                                        {costos[key].reduce((a, b) => a + b, 0)}
                                     </TableCell>
                                 </TableRow>
                             ))}

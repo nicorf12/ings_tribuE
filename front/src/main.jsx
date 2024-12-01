@@ -11,6 +11,8 @@ import PaginaEditarTarea from "./pages/PaginaEditarTarea.jsx";
 import PaginaCostoProyectos from "./pages/PaginaCostoProyectos.jsx";
 import PaginaCostoRoles from "./pages/PaginaCostoRoles.jsx";
 
+
+
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <Router>
@@ -28,4 +30,3 @@ createRoot(document.getElementById('root')).render(
     </StrictMode>
 );
 
-// <Link to="/"> Texto ?? </Link> -> Como se usa
