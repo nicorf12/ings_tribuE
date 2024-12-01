@@ -1,0 +1,28 @@
+/* Card.css */
+.card {
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+    position: relative; /* Para posicionar el contenido */
+}
+
+.card:hover {
+    background-color: #007bff; /* Color de fondo al hacer hover */
+    color: #ffffff; /* Color del texto al hacer hover */
+}
+
+.card .content {
+    opacity: 0; /* Oculta el contenido por defecto */
+    transition: opacity 0.3s ease; /* Transición suave para la opacidad */
+    position: absolute; /* Posicionamiento absoluto */
+    bottom: 10px; /* Alineación en la parte inferior */
+    left: 10px; /* Alineación a la izquierda */
+    right: 10px; /* Alineación a la derecha */
+}
+
+.card:hover .content {
+    opacity: 1; /* Muestra el contenido al hacer hover */
+}
+
+.card.expanded {
+
+    width: calc(120px * 3);
+}

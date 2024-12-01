@@ -4,8 +4,9 @@ import Container from "react-bootstrap/Container";
 import { useEffect, useState } from "react";
 import "../../../index.css";
 import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../../solicitudes.jsx";
-import {func} from "prop-types";
+import "./Card.css"
 import seedrandom from "seedrandom";
+
 
 const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -133,8 +134,9 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                                     (tasksByDay[day] || []).map((task) => {
                                         return (
                                             <Card style={{backgroundColor: `${task.color}`}} key={task.id}
-                                                  className={`mb-3 shadow-sm  ${selectedTask === task.id ? 'bg-primary text-white' : ''}`}
-                                                  onClick={() => handleSelected(task)}>
+                                                  className={`mb-3 shadow-sm card ${selectedTask === task.id ? 'bg-primary text-white expanded  ' : ''}`}
+                                                  onClick={() => handleSelected(task)}
+                                            >
                                                 <Card.Body style={{
                                                     width: "100%",
                                                     overflow: "hidden",

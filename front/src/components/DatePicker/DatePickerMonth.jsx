@@ -77,7 +77,6 @@ const DatePickerMonth = ({ startDate, endDate, setStartDate, setEndDate }) => {
             onChange={handleChange}
             maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
             dateFormat="MM/yyyy"
-
             showMonthYearPicker
             selectsRange
             filterDate={filterDate}

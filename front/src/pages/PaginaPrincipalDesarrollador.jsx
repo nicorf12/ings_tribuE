@@ -3,12 +3,12 @@ import Navegador from "../components/Navegador/Navegador.jsx";
 import Calendar from "../components/Calendario/Calendar.jsx"
 import CalendarioNavegable from "../components/Calendario/CalendarioNavegable.jsx";
 import {useEffect, useState} from "react";
-import seedrandom from 'seedrandom';
-import {useLocation, useNavigate} from "react-router-dom";
-import {toast, ToastContainer} from "react-toastify";
-import {Box, IconButton, Slide} from "@mui/material";
+
+import {useLocation} from "react-router-dom";
+
+import {Box} from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
-import CloseIcon from '@mui/icons-material/Close';
+
 const PaginaPrincipalDesarrollador = () => {
     const location = useLocation();
     const [carga, setCarga] = useState(null);
