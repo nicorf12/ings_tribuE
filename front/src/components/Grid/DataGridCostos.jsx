@@ -82,14 +82,14 @@ const DataGridCostos = ({costos ,meses}) => {
                                             align="center"
                                             sx={{ color: 'text.primary', textAlign: 'center' }}
                                         >
-                                            {value}
+                                            $ {value}
                                         </TableCell>
                                     ))}
                                     <TableCell
                                         align="center"
                                         sx={{ color: 'text.primary', textAlign: 'center' }}
                                     >
-                                        {costos[key].reduce((a, b) => a + b, 0)}
+                                       $ {costos[key].reduce((a, b) => a + b, 0)}
                                     </TableCell>
                                 </TableRow>
                             ))}
