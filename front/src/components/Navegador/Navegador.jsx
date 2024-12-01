@@ -1,13 +1,24 @@
 import Container from "react-bootstrap/Container"
 import Navbar from "react-bootstrap/Navbar"
-
+import {Button} from "@mui/material";
+import {Link} from "react-router-dom";
+import HomeIcon from '@mui/icons-material/Home';
 
 const Navegador = () => {
     return (
         <Navbar bg="primary" data-bs-theme="dark">
             <Container>
-                <Navbar.Brand href="/">PSA</Navbar.Brand>
-                <Navbar.Text href="/" >Home</Navbar.Text>
+                <Navbar.Brand>PSA</Navbar.Brand>
+                <Button
+                    component={Link}
+                    to="/"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<HomeIcon />}
+                    sx={{ textDecoration: 'none', color: 'white' }}
+                >
+                    Home
+                </Button>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>
