@@ -197,6 +197,7 @@ const Carga = ({editar,carga}) => {
         let errorMessage = checkForm()
         if (errorMessage !== null) {
             setShowInvalidValueAlert(errorMessage);
+            return;
         }
         const request = {
             hours: parseInt(hours),
@@ -218,6 +219,7 @@ const Carga = ({editar,carga}) => {
         let errorMessage = checkForm()
         if (errorMessage !== "") {
             setShowInvalidValueAlert(errorMessage);
+            return;
         }
 
         const request = {
@@ -326,7 +328,7 @@ const Carga = ({editar,carga}) => {
                         fontSize: "16px",
                     }}
                 >
-                    Hubo un error al eliminar la carga. Vuelve a intentarlo más tarde.
+                    Hubo un error al guardar la carga. Vuelve a intentarlo mas tarde.
                 </Box>
             </Snackbar>
             <Snackbar

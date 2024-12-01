@@ -61,6 +61,21 @@ export async function obtenerCargas() {
     }
 }
 
+export async function obtenerCargasEnPeriodo(startDate, endDate) {
+    const response = await fetch(`https://psa-loadhour.onrender.com/api/hours?initDate=${startDate}&endDate=${endDate}&idRecurso=ff14a491-e26d-4092-86ea-d76f20c165d1`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': "*"
+        }
+    });
+    if (response.ok) {
+        return await response.json();
+    } else {
+        throw new Error(`Error en la solicitud: ${response.status}`);
+    }
+}
+
 export async function eliminarCarga(carga) {
 
     const response = await fetch(`https://psa-loadhour.onrender.com/api/delete/${carga.id}`, {

@@ -27,7 +27,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 projects_aux = await obtenerProyectos();
                 tareas_aux = await obtenerTareas();
             } catch (e) {
-                setError(error)
+                setError(e)
                 return;
             }
             setProjects(projects_aux);
@@ -72,7 +72,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             try {
                 cargas_aux = await obtenerCargas();
             } catch (e) {
-                setError(error)
+                setError(e)
                 return;
             } finally {
                 setLoading(false);
@@ -119,6 +119,14 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 </tr>
                 </thead>
                 <tbody>
+                {error ? (
+                    <tr>
+                        <td colSpan={daysOfWeek.length} className="text-center">
+                            Hubo un error. Vuelve a intentarlo más tarde.
+                        </td>
+                    </tr>
+                ) : ( <>
+                </>)}
                 {loading ? (
                     <tr>
                         <td colSpan={daysOfWeek.length} className="text-center">

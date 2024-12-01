@@ -29,20 +29,20 @@ const PaginaPrincipalDesarrollador = () => {
 
 
 
-    const handleAdditionNotifClose = (e) => {
+    const handleAdditionNotifClose = () => {
         setAdditionNotif(false);
     }
-    const handleEditionNotifClose = (e) => {
+    const handleEditionNotifClose = () => {
         setEditionNotif(false);
     }
-    const handleDeletionNotifClose = (e) => {
+    const handleDeletionNotifClose = () => {
         setDeletionNotif(false);
     }
 
-    const handleErrorNotifClose = (e) => {
+    const handleErrorNotifClose = () => {
         setError(null);
     }
-    const handleLoadingNotifClose = (e) => {
+    const handleLoadingNotifClose = () => {
         setLoading(false);
     }
 
