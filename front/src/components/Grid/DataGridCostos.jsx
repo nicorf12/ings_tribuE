@@ -20,13 +20,13 @@ const theme = createTheme({
     },
 });
 
-// Función para crear datos
-function createData(name, ...values) {
-    return { name, values };
-}
 
-// Componente DataGridCostos
 const DataGridCostos = ({costos ,meses}) => {
+
+    console.log("Costos ",costos);
+
+    console.log(meses);
+
     return (
         <ThemeProvider theme={theme}>
             <Container>
@@ -57,7 +57,7 @@ const DataGridCostos = ({costos ,meses}) => {
                                     align="center"
                                     sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}
                                 >
-                                    Total (g)
+                                    Total
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -100,5 +100,7 @@ const DataGridCostos = ({costos ,meses}) => {
         </ThemeProvider>
     );
 };
+
+
 
 export default DataGridCostos;

@@ -93,21 +93,23 @@ const PaginaProyecto = () => {
     }
 
     useEffect(() => {
-        let cargas_aux;
-        let recursos_aux;
-        let tareas_aux;
         const f = async () => {
-            cargas_aux = await obtenerCargas();
-            recursos_aux = await obtenerRecursos();
-            tareas_aux = await obtenerTareas();
-            setCargas(cargas_aux)
-            setRecursos(recursos_aux)
-            setTareas(tareas_aux)
+            const cargas_aux = await obtenerCargas();
+            const recursos_aux = await obtenerRecursos();
+            const tareas_aux = await obtenerTareas();
+            setCargas(cargas_aux);
+            setRecursos(recursos_aux);
+            setTareas(tareas_aux);
+            const mesesCalculados = calcularMeses();
+            setMeses(mesesCalculados);
+
+            // Calcular costos después de cargar los datos
+            const costosAux = await obtenerCostos(); // Asegúrate de que esta función devuelva los costos
+            const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas_aux, tareas_aux, proyecto?.id), recursos_aux, mesesCalculados);
+            setCostos(costosPorRecurso);
         }
         f();
-        const mesesCalculados = calcularMeses()
-        setMeses(mesesCalculados);
-    }, [])
+    }, [location.state]); // Dependencia en location.state para ejecutar cuando cambie
 
     useEffect(() => {
         const proyecto_aux = location.state;
