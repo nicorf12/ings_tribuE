@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import { useEffect, useState } from "react";
 import "../../../index.css";
-import { obtenerTareas, obtenerProyectos, obtenerCargas } from "../../solicitudes.jsx";
+import {obtenerTareas, obtenerProyectos, obtenerCargas, obtenerCargasEnPeriodo} from "../../solicitudes.jsx";
 import "./Card.css"
 import seedrandom from "seedrandom";
 
@@ -17,6 +17,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
     const [tareas, setTareas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [cargasGuardadas, setCargasGuardadas] = useState({})
 
     useEffect(() => {
         setLoading(true);
@@ -30,6 +31,8 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 setError(e)
                 setLoading(false);
                 return;
+            } finally {
+                setLoading(false);
             }
             setProjects(projects_aux);
             setTareas(tareas_aux);
@@ -57,21 +60,27 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             });
         });
         setTasksByDay(tasks);
-    }, [fecha, cargas])
+    }, [cargas])
 
     // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
     useEffect(() => {
+        const startOfWeek = new Date(fecha);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
         if (tareas.length === 0) {
             return;
         }
         if (deletion) {
             setCargas(cargas.filter(carga => carga.id !== deletion.id));
         }
-        const fetchData = async () => {
 
+        const fetchData = async () => {
+            setLoading(true);
             let cargas_aux;
             try {
-                cargas_aux = await obtenerCargas();
+                cargas_aux = await obtenerCargasEnPeriodo(formatDate(startOfWeek), formatDate(endOfWeek), "ff14a491-e26d-4092-86ea-d76f20c165d1");
             } catch (e) {
                 setError(e)
                 return;
@@ -79,10 +88,16 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 setLoading(false);
             }
             cargas_aux = formatCargas(cargas_aux, tareas, projects);
+            cargasGuardadas[startOfWeek] = cargas_aux;
+            setCargasGuardadas(cargasGuardadas);
             setCargas(cargas_aux);
         };
-        fetchData();
-    }, [tareas, deletion]);
+        if (cargasGuardadas.hasOwnProperty(startOfWeek)) {
+            setCargas(cargasGuardadas[startOfWeek]);
+        } else {
+            fetchData();
+        }
+    }, [tareas, deletion, fecha]);
 
 
     const handleSelected = (task) => {

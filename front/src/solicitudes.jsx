@@ -61,7 +61,7 @@ export async function obtenerCargas() {
     }
 }
 
-export async function obtenerCargasEnPeriodo(startDate, endDate, { idRecurso }) {
+export async function obtenerCargasEnPeriodo(startDate, endDate, idRecurso) {
     const response = await fetch(`https://psa-loadhour.onrender.com/api/hours?initDate=${startDate}&endDate=${endDate}&idRecurso=${idRecurso}`, {
         method: 'GET',
         headers: {
