@@ -9,10 +9,8 @@ const PaginaProyecto = () => {
     const [costos, setCostos] = useState([]);
     const [proyecto, setProyecto] = useState(null);
     const [meses, setMeses] = useState(null);
-
     const [endDate, setEndDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));  // Hace un año
-
     const location = useLocation();
 
     const [cargas, setCargas] = useState([]);
@@ -31,11 +29,12 @@ const PaginaProyecto = () => {
         });
 
         const costosMap = {};
-        costos.forEach(costo => {
-            const key = `${costo.role.id}-${costo.month}-${costo.year}`;
-            costosMap[key] = costo.incomeByHour;
-        });
-
+        for (let costoAux of costos) {
+            costoAux.forEach(costo => {
+                const key = `${costo.role.id}-${costo.month}-${costo.year}`;
+                costosMap[key] = costo.incomeByHour;
+            });
+        }
         const mesesIndices = {};
         meses.forEach((mesAnio, index) => {
             const [mes, anio] = mesAnio.split(' ');
@@ -46,6 +45,7 @@ const PaginaProyecto = () => {
         console.log(mesesIndices);
 
         const resultado = {};
+        console.log("Cantidad de meses:", meses.length);
         Object.values(recursosMap).forEach(nombre => {
             resultado[nombre] = Array(meses.length).fill(0);
         });
@@ -103,13 +103,27 @@ const PaginaProyecto = () => {
             const mesesCalculados = calcularMeses();
             setMeses(mesesCalculados);
 
-            // Calcular costos después de cargar los datos
-            const costosAux = await obtenerCostos(); // Asegúrate de que esta función devuelva los costos
-            const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas_aux, tareas_aux, proyecto?.id), recursos_aux, mesesCalculados);
-            setCostos(costosPorRecurso);
         }
         f();
     }, [location.state]); // Dependencia en location.state para ejecutar cuando cambie
+
+
+    useEffect(() => {
+        const f = async () => {
+            const arrAnios = [];
+            arrAnios.push(startDate.getFullYear());
+            arrAnios.push(endDate.getFullYear());
+
+            // Calcular costos después de cargar los datos
+
+            const costosAux = await obtenerCostos(arrAnios); // Asegúrate de que esta función devuelva los costos
+            const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas, tareas, proyecto?.id), recursos, meses);
+            setCostos(costosPorRecurso);
+        }
+        f();
+    }, [meses])
+
+
 
     useEffect(() => {
         const proyecto_aux = location.state;
@@ -131,9 +145,12 @@ const PaginaProyecto = () => {
         const mesesCalculados = calcularMeses();
         setMeses(mesesCalculados);
 
+        const arrAnios = [];
+        arrAnios.push(startDate.getFullYear());
+        arrAnios.push(endDate.getFullYear());
 
-        console.log(filtrarPorProyecto(cargas,tareas, proyecto.id));
-        let costosPorRecurso = agruparPorRecurso(obtenerCostos(),filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
+
+        let costosPorRecurso = agruparPorRecurso(costos,filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
         setCostos(costosPorRecurso);
 };
 

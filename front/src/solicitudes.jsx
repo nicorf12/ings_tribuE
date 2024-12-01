@@ -125,25 +125,36 @@ export async function agregarCarga(request) {
     }
 }
 
-/*
-export function obtenerCostos(handleSuccess= () => {}, handleError= () => {}) {
-    const url = `https://two0242c-is-squad12.onrender.com/finance/incomes?year=X`; // URL DE FINANZAS
+
+export async function obtenerCostos(years) {
+    const urlBase = `https://two0242c-is-squad12.onrender.com/finance/incomes?year=`;
+    const resultados = [];
+
+    for (const year of years) {
+
+        const url = `${urlBase}${year}`; // Construir la URL con el año actual
+
         const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Headers': "*"
-            }
+            },
         });
-    if (response.ok) {
-    return await response.json();
-    } else {
-        throw new Error(`Error en la solicitud: ${response.status}`);
+
+        if (response.ok) {
+            const data = await response.json();
+
+            resultados.push(data); // Almacena los resultados
+        } else {
+            throw new Error(`Error en la solicitud para el año ${year}: ${response.status}`);
+        }
     }
+
+    return resultados; // Devuelve un array con los resultados de todos los años
 }
-*/
 
 
+/*
 export function obtenerCostos() {
     return  [
         {
@@ -258,3 +269,5 @@ export function obtenerCostos() {
         }
         ]
 }
+
+ */
