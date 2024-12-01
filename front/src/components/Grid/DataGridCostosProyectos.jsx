@@ -25,21 +25,23 @@ const DataGridCostosProyectos = ({projects}) => {
 
 
     const drawProjectHeader = () => (
-        <TableCell sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}>
+        <TableCell sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center', width: '22%' }}>
             Proyecto
         </TableCell>
     );
 
     const drawMonthsHeader = () => (
-        months.map((month, index) => (
-            <TableCell
-                key={index}
-                align="center"
-                sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center', maxWidth: 80 }}
-            >
-                {month}
-            </TableCell>
-        ))
+        <>
+            {months.map((month, index) => (
+                <TableCell
+                    key={index}
+                    align="center"
+                    sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center', width: '6%' }}
+                >
+                    {month}
+                </TableCell>
+            ))}
+        </>
     );
 
     const drawTotalHeader = () => (
@@ -63,14 +65,14 @@ const DataGridCostosProyectos = ({projects}) => {
         <TableCell
             component="th"
             scope="row"
-            sx={{ color: 'text.primary', textAlign: 'center' }}
+            sx={{ color: 'text.primary', textAlign: 'center', width: '22%'}}
         >
             {project.name}
         </TableCell>
     );
 
     const drawMonthValues = (byMonth) => (
-        Object.entries(byMonth).map(([month, amount], index) => (
+        Object.entries(byMonth).map(([month, amount]) => (
             drawAmountValue(amount, month)
         ))
     );
@@ -79,9 +81,9 @@ const DataGridCostosProyectos = ({projects}) => {
         <TableCell
             key={key}
             align="center"
-            sx={{ color: 'text.primary', textAlign: 'center' }}
+            sx={{ color: 'text.primary', textAlign: 'center', width: '6%', whiteSpace: 'nowrap' }}
         >
-            $ {amount.toLocaleString('es-ES')}
+            $ {amount.toLocaleString()}
         </TableCell>
     );
 
