@@ -17,7 +17,7 @@ const CalendarioNavegableLider = ({ setFecha, recurso, setRecurso, recursos }) =
                             options={recursos}
                             value={recurso}
                             onChange={(event, newValue) => setRecurso(newValue)} // Actualiza el proyecto seleccionado
-                            getOptionLabel={(option) => option.nombre} // Muestra el nombre del proyecto
+                            getOptionLabel={(option) => option.nombre + ' '+ option.apellido} // Muestra el nombre del proyecto
                             renderInput={(params) => (
                                 <TextField {...params} label="Seleccione un recurso" fullWidth />
                             )}
