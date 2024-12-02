@@ -42,10 +42,10 @@ const PaginaProyecto = () => {
             mesesIndices[`${mesNumero}-${anio}`] = index;
         });
 
-        console.log(mesesIndices);
+
 
         const resultado = {};
-        console.log("Cantidad de meses:", meses.length);
+
         Object.values(recursosMap).forEach(nombre => {
             resultado[nombre] = Array(meses.length).fill(0);
         });
@@ -85,12 +85,14 @@ const PaginaProyecto = () => {
             const endM = year === endYear ? endMonth : 11;
 
             for (let month = startM; month <= endM; month++) {
-                mesesArray.push(new Date(year, month).toLocaleString('default', {month: 'long', year: 'numeric'}));
+                const mes = new Date(year, month).toLocaleString('default', { month: 'long' });
+                const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1); // Capitalizar primera letra
+                mesesArray.push(`${mesCapitalizado} ${year}`); // Formato: MES - AÑO
             }
-
         }
+        console.log("Meses array", mesesArray);
         return mesesArray;
-    }
+    };
 
     useEffect(() => {
         const f = async () => {
