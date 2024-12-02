@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import DatePickerExclude from "./DatePicker/DatePickerExclude.jsx";
 import Snackbar from "@mui/material/Snackbar";
 import {Box} from "@mui/material";
-import {formatDate} from "../utils/lib.js";
 import {defaultErrorMessage, errorRed, loadingGray, successGreen} from "../utils/constants.js";
 
 
@@ -157,12 +156,12 @@ const Carga = ({editar,carga}) => {
         setLoading(false);
     }
 
-    //const formatDate = (date) => {
-    //    const year = date.getFullYear();
-    //    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    //    const day = date.getDate().toString().padStart(2, '0');
-    //    return `${year}-${month}-${day}`;
-    //};
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     // Validacion de formulario
     const checkForm = () => {

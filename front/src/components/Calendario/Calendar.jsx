@@ -7,7 +7,6 @@ import {obtenerTareas, obtenerProyectos, obtenerCargas, obtenerCargasEnPeriodo} 
 import "./Card.css"
 import seedrandom from "seedrandom";
 import colorPalette, {defaultErrorMessage, defaultLoadingMessage} from "../../utils/constants.js";
-import {formatDate} from "../../utils/lib.js";
 
 
 const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
@@ -248,7 +247,7 @@ const formatCargas = (cargas, tareas, proyectos) => {
             color = colors[project.id];
         } else {
             do {
-                color = colorPalette[Math.floor(Math.random() * colorPallete.length)];
+                color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
             } while(used_colors.includes(color))
             used_colors.push(color);
             colors[project.id] = color
@@ -264,52 +263,12 @@ const formatCargas = (cargas, tareas, proyectos) => {
     });
     return cargas_formateadas;
 };
-/*
-const colorPallete = [
-    "#FF9999",
-    "#FFAA99",
-    "#FFBB99",
-    "#FFCC99",
-    "#FFDD99",
-    "#FFEE99",
-    "#FFFF99",
-    "#EEFF99",
-    "#DDFF99",
-    "#CCFF99",
-    "#BBFF99",
-    "#AAFF99",
-    "#99FF99",
-    "#99FFAA",
-    "#99FFBB",
-    "#99FFCC",
-    "#99FFDD",
-    "#99FFEE",
-    "#99FFFF",
-    "#99EEFF",
-    "#99DDFF",
-    "#99CCFF",
-    "#99BBFF",
-    "#99AAFF",
-    "#9999FF",
-    "#AA99FF",
-    "#BB99FF",
-    "#CC99FF",
-    "#DD99FF",
-    "#EE99FF",
-    "#FF99FF",
-    "#FF99EE",
-    "#FF99DD",
-    "#FF99CC",
-    "#FF99BB",
-    "#FF99AA",
-]
-*/
 
-//const formatDate = (date) => {
-//    const year = date.getFullYear();
-//    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-//    const day = date.getDate().toString().padStart(2, '0');
-//    return `${year}-${month}-${day}`;
-//};
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 
 export default Calendar;
