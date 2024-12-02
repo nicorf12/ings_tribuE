@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from "react-bootstrap/Container";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {defaultErrorMessage} from "../../utils/constants.js";
+import {defaultErrorMessage, defaultLoadingMessage} from "../../utils/constants.js";
 
 const theme = createTheme({
     palette: {
@@ -59,25 +59,29 @@ const DataGridCostos = ({costos ,meses, loading, error}) => {
                             </TableRow>
                         </TableHead>
                         {loading ? (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={meses ? meses.length + 2 : 2}
-                                    align="center"
-                                    sx={{ color: 'text.primary', textAlign: 'center' }}
-                                >
-                                    {defaultLoadingMessage}
-                                </TableCell>
-                            </TableRow>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={meses ? meses.length + 2 : 2}
+                                        align="center"
+                                        sx={{ color: 'text.primary', textAlign: 'center' }}
+                                    >
+                                        {defaultLoadingMessage}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
                         ) : error ? (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={meses ? meses.length + 2 : 2}
-                                    align="center"
-                                    sx={{ color: 'text.primary', textAlign: 'center' }}
-                                >
-                                    {defaultErrorMessage}
-                                </TableCell>
-                            </TableRow>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={meses ? meses.length + 2 : 2}
+                                        align="center"
+                                        sx={{ color: 'text.primary', textAlign: 'center' }}
+                                    >
+                                        {defaultErrorMessage}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
                         ) : (
                         <TableBody>
                             {Object.keys(costos).map((key, rowIndex) => (

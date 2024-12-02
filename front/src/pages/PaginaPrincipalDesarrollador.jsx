@@ -12,15 +12,16 @@ import {errorRed, loadingGray, successGreen} from "../utils/constants.js";
 
 const PaginaPrincipalDesarrollador = () => {
     const location = useLocation();
+
     const [carga, setCarga] = useState(null);
     const [fecha, setFecha] = useState(new Date());
     const [deletion, setDeletion] = useState(null);
     const [deletionNotif, setDeletionNotif] = useState(deletion !== null);
-    const [additionNotif, setAdditionNotif] = useState(location.state ? location.state === 2 : false);
-    const [editionNotif, setEditionNotif] = useState(location.state ? location.state === 1 : false);
+    const [additionNotif, setAdditionNotif] = useState(false);
+    const [editionNotif, setEditionNotif] = useState(false);
+
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-
 
     // Manejo en caso de que se halla borrado una carga
     useEffect(() => {
@@ -31,6 +32,15 @@ const PaginaPrincipalDesarrollador = () => {
         }
     }, [deletion])
 
+
+    useEffect(() => {
+        if (sessionStorage.getItem('ignoreState') === "false") {
+            setAdditionNotif(location.state ? location.state === 2 : false)
+            setEditionNotif(location.state ? location.state === 1 : false)
+            sessionStorage.setItem('ignoreState', "true");
+        }
+
+    }, [sessionStorage.getItem('ignoreState')])
 
 
     const handleAdditionNotifClose = () => {
@@ -56,7 +66,7 @@ const PaginaPrincipalDesarrollador = () => {
             <div className="">
                 <h2 className="text-center m-3 ">Calendario de Tareas</h2>
                 <CalendarioNavegable carga={carga} setFecha={setFecha} setDeletion={setDeletion} setError={setError} setLoading={setLoading}/>
-                <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion}/>
+                <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion} recurso={{id: "ff14a491-e26d-4092-86ea-d76f20c165d1"}}/>
                 <Snackbar
                     open={additionNotif}
                     autoHideDuration={4000}

@@ -7,7 +7,6 @@ import {obtenerCostos, obtenerCargas, obtenerRecursos, obtenerTareas} from "../s
 
 const PaginaProyecto = () => {
     const [costos, setCostos] = useState([]);
-    const [proyecto, setProyecto] = useState(null);
     const [meses, setMeses] = useState(null);
     const [endDate, setEndDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));  // Hace un año
@@ -16,6 +15,10 @@ const PaginaProyecto = () => {
     const [cargas, setCargas] = useState([]);
     const [tareas, setTareas] = useState([]);
     const [recursos, setRecursos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const proyecto = location.state ? location.state : null;
 
     const agruparPorRecurso = (costos, cargas, recursos, meses) => {
         const mesesMap = {
@@ -92,44 +95,52 @@ const PaginaProyecto = () => {
     };
 
     useEffect(() => {
+        const mesesCalculados = calcularMeses();
+        setMeses(mesesCalculados);
         const f = async () => {
-            const cargas_aux = await obtenerCargas();
-            const recursos_aux = await obtenerRecursos();
-            const tareas_aux = await obtenerTareas();
-            setCargas(cargas_aux);
-            setRecursos(recursos_aux);
-            setTareas(tareas_aux);
-            const mesesCalculados = calcularMeses();
-            setMeses(mesesCalculados);
-
+            setLoading(true);
+            try {
+                const cargas_aux = await obtenerCargas();
+                const recursos_aux = await obtenerRecursos();
+                const tareas_aux = await obtenerTareas();
+                setCargas(cargas_aux);
+                setRecursos(recursos_aux);
+                setTareas(tareas_aux);
+            } catch (e) {
+                console.error(e)
+                setError(e)
+            } finally {
+                setLoading(false)
+            }
         }
         f();
     }, []);
 
 
     useEffect(() => {
+        if (tareas.length === 0) {
+            return;
+        }
+        setLoading(true);
         const f = async () => {
             const arrAnios = [];
             arrAnios.push(startDate.getFullYear());
             arrAnios.push(endDate.getFullYear());
-
-            // Calcular costos después de cargar los datos
-
-            const costosAux = await obtenerCostos(arrAnios); // Asegúrate de que esta función devuelva los costos
-            const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas, tareas, proyecto?.id), recursos, meses);
-            setCostos(costosPorRecurso);
+            try {
+                const costosAux = await obtenerCostos(arrAnios);
+                const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas, tareas, proyecto?.id), recursos, meses);
+                setCostos(costosPorRecurso);
+            } catch (e) {
+                console.error(e)
+                setError(e)
+            } finally {
+                setLoading(false)
+            }
         }
         f();
-    }, [meses])
+    }, [meses, tareas])
 
 
-
-    useEffect(() => {
-        const proyecto_aux = location.state;
-        if (proyecto_aux) {
-            setProyecto(proyecto_aux);
-        }
-    }, []);
 
     const handleConfirmarNuevaBusqueda = () => {
         if (startDate == null || endDate == null) {
@@ -144,13 +155,13 @@ const PaginaProyecto = () => {
         const mesesCalculados = calcularMeses();
         setMeses(mesesCalculados);
 
-        const arrAnios = [];
-        arrAnios.push(startDate.getFullYear());
-        arrAnios.push(endDate.getFullYear());
+        //const arrAnios = [];
+        //arrAnios.push(startDate.getFullYear());
+        //arrAnios.push(endDate.getFullYear());
 
 
-        let costosPorRecurso = agruparPorRecurso(costos,filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
-        setCostos(costosPorRecurso);
+        //let costosPorRecurso = agruparPorRecurso(costos,filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
+        //setCostos(costosPorRecurso);
 };
 
 return (
@@ -164,7 +175,7 @@ return (
         setStartDate={setStartDate}
         setEndDate={setEndDate}
     />
-    <DataGridCostos costos={costos} meses={meses} />
+    <DataGridCostos costos={costos} meses={meses} loading={loading} error={error}/>
 </>
 );
 };

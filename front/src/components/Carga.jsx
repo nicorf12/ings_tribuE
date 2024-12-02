@@ -204,6 +204,7 @@ const Carga = ({editar,carga}) => {
         setLoading(true);
         try {
             await modificarCarga(carga, request);
+            sessionStorage.setItem('ignoreState', "false");
             navigate('/dev', { state: 1 });
         } catch (e) {
             setError(e);
@@ -231,6 +232,7 @@ const Carga = ({editar,carga}) => {
         setLoading(true);
         try {
             await agregarCarga(request);
+            sessionStorage.setItem('ignoreState', "false");
             navigate('/dev', { state: 2 });
         } catch (e) {
             setError(e);

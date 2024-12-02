@@ -5,6 +5,10 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
 const CalendarioNavegableLider = ({ setFecha, recurso, setRecurso, recursos }) => {
+
+    const handleChange = (event, newValue) => {
+        setRecurso(newValue)
+    }
     return (
         <Navbar>
             <Container>
@@ -12,12 +16,12 @@ const CalendarioNavegableLider = ({ setFecha, recurso, setRecurso, recursos }) =
                     <div style={{ flex: 1 }}>
                         <DatePickerWeek setFecha={setFecha} />
                     </div>
-                    <div style={{ flex: '0 0 50%' }}>
+                    <div style={{ flex: '0 0 25%' }}>
                         <Autocomplete
                             options={recursos}
                             value={recurso}
-                            onChange={(event, newValue) => setRecurso(newValue)} // Actualiza el proyecto seleccionado
-                            getOptionLabel={(option) => option.nombre + ' '+ option.apellido} // Muestra el nombre del proyecto
+                            onChange={handleChange} // Actualiza el proyecto seleccionado
+                            getOptionLabel={(option) => option.nombre + ' ' + option.apellido} // Muestra el nombre del proyecto
                             renderInput={(params) => (
                                 <TextField {...params} label="Seleccione un recurso" fullWidth />
                             )}

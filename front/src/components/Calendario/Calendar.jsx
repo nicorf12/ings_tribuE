@@ -6,9 +6,10 @@ import "../../../index.css";
 import {obtenerTareas, obtenerProyectos, obtenerCargas, obtenerCargasEnPeriodo} from "../../solicitudes.jsx";
 import "./Card.css"
 import seedrandom from "seedrandom";
+import {colorPalette} from "../../utils/constants.js";
 
 
-const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
+const Calendar = ({ setCarga, fecha, setFecha, deletion, recurso }) => {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const [cargas, setCargas] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -62,29 +63,38 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         setTasksByDay(tasks);
     }, [cargas])
 
+    // Borra la carga de hora del calendario cuando hay un delete
+    useEffect(() => {
+        if (deletion) {
+            const startOfWeek = new Date(fecha);
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+            const cargasAux = cargas.filter(carga => carga.id !== deletion)
+            setCargas(cargasAux);
+            cargasGuardadas[recurso.id][startOfWeek] = cargasAux
+            setCargasGuardadas(cargasGuardadas)
+        }
+    }, [deletion])
 
     // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
     useEffect(() => {
+        if (tareas.length === 0) {
+            return;
+        }
+        if (recurso === null) {
+            setCargas([])
+            return;
+        }
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-        if (tareas.length === 0) {
-            return;
-        }
-        if (deletion) {
-            setCargas(cargas.filter(carga => carga.id !== deletion.id));
-            delete cargasGuardadas[startOfWeek]
-            setCargasGuardadas(cargasGuardadas)
-            return;
-        }
-
         const fetchData = async () => {
             setLoading(true);
             let cargas_aux;
             try {
-                cargas_aux = await obtenerCargasEnPeriodo(formatDate(startOfWeek), formatDate(endOfWeek), "ff14a491-e26d-4092-86ea-d76f20c165d1");
+
+                cargas_aux = await obtenerCargasEnPeriodo(formatDate(startOfWeek), formatDate(endOfWeek), recurso.id);
             } catch (e) {
                 setError(e)
                 return;
@@ -92,20 +102,24 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 setLoading(false);
             }
             cargas_aux = formatCargas(cargas_aux, tareas, projects);
-            cargasGuardadas[startOfWeek] = cargas_aux;
+            if (!cargasGuardadas.hasOwnProperty(recurso.id)) {
+                cargasGuardadas[recurso.id] = {[startOfWeek]: cargas_aux}
+            } else {
+                cargasGuardadas[recurso.id][startOfWeek] = cargas_aux
+            }
             setCargasGuardadas(cargasGuardadas);
             setCargas(cargas_aux);
         };
-        if (cargasGuardadas.hasOwnProperty(startOfWeek)) {
-            setCargas(cargasGuardadas[startOfWeek]);
+        if (cargasGuardadas.hasOwnProperty(recurso.id) && cargasGuardadas[recurso.id].hasOwnProperty(startOfWeek)) {
+            setCargas(cargasGuardadas[recurso.id][startOfWeek]);
         } else {
             fetchData();
         }
-    }, [tareas, deletion, fecha]);
+    }, [tareas, fecha, recurso]);
+
 
 
     const handleSelected = (task) => {
-        console.log(deletion)
         if (deletion !== null) {
             return;
         }
@@ -239,7 +253,7 @@ const formatCargas = (cargas, tareas, proyectos) => {
             color = colors[project.id];
         } else {
             do {
-                color = colorPallete[Math.floor(Math.random() * colorPallete.length)];
+                color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
             } while(used_colors.includes(color))
             used_colors.push(color);
             colors[project.id] = color
@@ -256,44 +270,6 @@ const formatCargas = (cargas, tareas, proyectos) => {
     return cargas_formateadas;
 };
 
-const colorPallete = [
-    "#FF9999",
-    "#FFAA99",
-    "#FFBB99",
-    "#FFCC99",
-    "#FFDD99",
-    "#FFEE99",
-    "#FFFF99",
-    "#EEFF99",
-    "#DDFF99",
-    "#CCFF99",
-    "#BBFF99",
-    "#AAFF99",
-    "#99FF99",
-    "#99FFAA",
-    "#99FFBB",
-    "#99FFCC",
-    "#99FFDD",
-    "#99FFEE",
-    "#99FFFF",
-    "#99EEFF",
-    "#99DDFF",
-    "#99CCFF",
-    "#99BBFF",
-    "#99AAFF",
-    "#9999FF",
-    "#AA99FF",
-    "#BB99FF",
-    "#CC99FF",
-    "#DD99FF",
-    "#EE99FF",
-    "#FF99FF",
-    "#FF99EE",
-    "#FF99DD",
-    "#FF99CC",
-    "#FF99BB",
-    "#FF99AA",
-]
 
 
 const formatDate = (date) => {
