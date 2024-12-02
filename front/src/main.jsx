@@ -10,6 +10,7 @@ import PaginaBuscarProyecto from "./pages/PaginaBuscarProyecto.jsx";
 import PaginaEditarTarea from "./pages/PaginaEditarTarea.jsx";
 import PaginaCostoProyectos from "./pages/PaginaCostoProyectos.jsx";
 import PaginaCostoRoles from "./pages/PaginaCostoRoles.jsx";
+import PaginaLiderCalendario from "./pages/PaginaLiderCalendario.jsx";
 
 
 
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/dev/editar" element={<PaginaEditarTarea />} />
                 <Route path="/lider/proyecto" element={<PaginaProyecto />} />
                 <Route path="/lider" element={<PaginaBuscarProyecto />} />
+                <Route path="/lider/calendario" element={<PaginaLiderCalendario/>} />
                 <Route path="/costos/proyectos" element={<PaginaCostoProyectos/>} />
                 <Route path="/costos/roles" element={<PaginaCostoRoles/>} />
             </Routes>

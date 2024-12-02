@@ -7,37 +7,15 @@ import {obtenerCostos, obtenerCargas, obtenerRecursos, obtenerTareas} from "../s
 
 const PaginaProyecto = () => {
     const [costos, setCostos] = useState([]);
+    const [proyecto, setProyecto] = useState(null);
+    const [meses, setMeses] = useState(null);
     const [endDate, setEndDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));  // Hace un año
     const location = useLocation();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+
     const [cargas, setCargas] = useState([]);
     const [tareas, setTareas] = useState([]);
     const [recursos, setRecursos] = useState([]);
-
-    const calcularMeses = () => {
-        const mesesArray = [];
-        const startYear = startDate.getFullYear();
-        const endYear = endDate.getFullYear();
-        const startMonth = startDate.getMonth();
-        const endMonth = endDate.getMonth();
-
-        for (let year = startYear; year <= endYear; year++) {
-            const startM = year === startYear ? startMonth : 0;
-            const endM = year === endYear ? endMonth : 11;
-
-            for (let month = startM; month <= endM; month++) {
-                mesesArray.push(new Date(year, month).toLocaleString('default', {month: 'long', year: 'numeric'}));
-            }
-
-        }
-        return mesesArray;
-    }
-    const [meses, setMeses] = useState(calcularMeses());
-    const proyecto = location.state ? location.state : null;
-
-
 
     const agruparPorRecurso = (costos, cargas, recursos, meses) => {
         const mesesMap = {
@@ -64,7 +42,10 @@ const PaginaProyecto = () => {
             mesesIndices[`${mesNumero}-${anio}`] = index;
         });
 
+
+
         const resultado = {};
+
         Object.values(recursosMap).forEach(nombre => {
             resultado[nombre] = Array(meses.length).fill(0);
         });
@@ -81,6 +62,8 @@ const PaginaProyecto = () => {
             if (indexMes !== undefined) {
                 const key = `${rolId}-${mes}-${anio}`;
                 const incomeByHour = costosMap[key];
+                console.log(costosMap);
+                console.log(key);
                 if (incomeByHour) {
                     resultado[nombreRecurso][indexMes] += carga.hours * incomeByHour;
                 }
@@ -90,52 +73,66 @@ const PaginaProyecto = () => {
         return resultado;
     };
 
+    const calcularMeses = () => {
+        const mesesArray = [];
+        const startYear = startDate.getFullYear();
+        const endYear = endDate.getFullYear();
+        const startMonth = startDate.getMonth();
+        const endMonth = endDate.getMonth();
 
-    useEffect(() => {
-        const f = async () => {
-            setLoading(true);
-            try {
-                const cargas_aux = await obtenerCargas();
-                const recursos_aux = await obtenerRecursos();
-                const tareas_aux = await obtenerTareas();
-                setCargas(cargas_aux);
-                setRecursos(recursos_aux);
-                setTareas(tareas_aux);
+        for (let year = startYear; year <= endYear; year++) {
+            const startM = year === startYear ? startMonth : 0;
+            const endM = year === endYear ? endMonth : 11;
 
-            } catch (e) {
-                setError(e)
-            } finally {
-                setLoading(false);
+            for (let month = startM; month <= endM; month++) {
+                const mes = new Date(year, month).toLocaleString('default', { month: 'long' });
+                const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
+                mesesArray.push(`${mesCapitalizado} ${year}`);
             }
         }
+        console.log("Meses array", mesesArray);
+        return mesesArray;
+    };
+
+    useEffect(() => {
+        const f = async () => {
+            const cargas_aux = await obtenerCargas();
+            const recursos_aux = await obtenerRecursos();
+            const tareas_aux = await obtenerTareas();
+            setCargas(cargas_aux);
+            setRecursos(recursos_aux);
+            setTareas(tareas_aux);
+            const mesesCalculados = calcularMeses();
+            setMeses(mesesCalculados);
+
+        }
         f();
-    }, []);
+    }, [location.state]); // Dependencia en location.state para ejecutar cuando cambie
 
 
     useEffect(() => {
-        if (tareas.length === 0) {
-            return;
-        }
         const f = async () => {
-            setLoading(true);
             const arrAnios = [];
             arrAnios.push(startDate.getFullYear());
             arrAnios.push(endDate.getFullYear());
-            try {
-                const costosAux = await obtenerCostos(arrAnios);
-                const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas, tareas, proyecto?.id), recursos, meses);
-                setCostos(costosPorRecurso);
-            } catch (e) {
-                setError(e);
-            } finally {
-                setLoading(false);
-            }
+
+            // Calcular costos después de cargar los datos
+
+            const costosAux = await obtenerCostos(arrAnios); // Asegúrate de que esta función devuelva los costos
+            const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas, tareas, proyecto?.id), recursos, meses);
+            setCostos(costosPorRecurso);
         }
         f();
-    }, [meses, tareas]);
+    }, [meses])
 
 
 
+    useEffect(() => {
+        const proyecto_aux = location.state;
+        if (proyecto_aux) {
+            setProyecto(proyecto_aux);
+        }
+    }, [location.state]);
 
     const handleConfirmarNuevaBusqueda = () => {
         if (startDate == null || endDate == null) {
@@ -146,24 +143,33 @@ const PaginaProyecto = () => {
             setStartDate(defaultStartDate);
             setEndDate(defaultEndDate);
         }
+
         const mesesCalculados = calcularMeses();
         setMeses(mesesCalculados);
-    };
 
-    return (
-    <>
-        <Navegador />
-        <NavegadorProyecto
-            proyecto={proyecto}
-            handle={handleConfirmarNuevaBusqueda}
-            startDate={startDate}
-            endDate={endDate}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-        />
-        <DataGridCostos costos={costos} meses={meses} loading={loading} error={error}/>
-    </>
-    );
+        const arrAnios = [];
+        arrAnios.push(startDate.getFullYear());
+        arrAnios.push(endDate.getFullYear());
+
+
+        let costosPorRecurso = agruparPorRecurso(costos,filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
+        setCostos(costosPorRecurso);
+};
+
+return (
+<>
+    <Navegador />
+    <NavegadorProyecto
+        proyecto={proyecto}
+        handle={handleConfirmarNuevaBusqueda}
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+    />
+    <DataGridCostos costos={costos} meses={meses} />
+</>
+);
 };
 
 function filtrarPorProyecto(cargas, tareas, idProyecto) {
