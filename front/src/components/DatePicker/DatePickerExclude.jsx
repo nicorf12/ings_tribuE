@@ -11,7 +11,6 @@ const DatePickerExclude = ({ date ,setFecha,excludeDates}) => {
   const [startDate, setStartDate] = useState(new Date());
 
 
-
   useEffect(() => {
     const today = new Date();
     const parsedDate = new Date(date);
@@ -23,14 +22,15 @@ const DatePickerExclude = ({ date ,setFecha,excludeDates}) => {
   }, [date]);
 
 
-  const excludeDatesFilter = (date) => {
+  const excludeDatesFilter = (dateAux) => {
     const today = new Date();
-    const dayOfWeek = today.getDay();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - dayOfWeek - 1);
+
+    const dayOfWeek = date.getDay();
+    const startOfWeek = new Date(date);
+    startOfWeek.setDate(date.getDate() - dayOfWeek - 1);
     const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    return date < startOfWeek || date > today || date > endOfWeek;
+    endOfWeek.setDate(startOfWeek.getDate() + 7);
+    return dateAux < startOfWeek || dateAux > today || dateAux > endOfWeek;
 
   };
 
