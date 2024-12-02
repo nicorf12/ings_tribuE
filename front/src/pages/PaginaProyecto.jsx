@@ -155,13 +155,7 @@ const PaginaProyecto = () => {
         const mesesCalculados = calcularMeses();
         setMeses(mesesCalculados);
 
-        //const arrAnios = [];
-        //arrAnios.push(startDate.getFullYear());
-        //arrAnios.push(endDate.getFullYear());
 
-
-        //let costosPorRecurso = agruparPorRecurso(costos,filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
-        //setCostos(costosPorRecurso);
 };
 
 return (
