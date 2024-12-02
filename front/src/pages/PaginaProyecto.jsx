@@ -22,8 +22,8 @@ const PaginaProyecto = () => {
 
     const agruparPorRecurso = (costos, cargas, recursos, meses) => {
         const mesesMap = {
-            "January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6,
-            "July": 7, "August": 8, "September": 9, "October": 10, "November": 11, "December": 12
+            "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5, "Junio": 6,
+            "Julio" : 7, "Agosto": 8, "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Deciembre": 12
         };
 
         const recursosMap = {};
@@ -39,6 +39,7 @@ const PaginaProyecto = () => {
             });
         }
         const mesesIndices = {};
+
         meses.forEach((mesAnio, index) => {
             const [mes, anio] = mesAnio.split(' ');
             const mesNumero = mesesMap[mes];
@@ -53,7 +54,10 @@ const PaginaProyecto = () => {
             resultado[nombre] = Array(meses.length).fill(0);
         });
 
+
+
         cargas.forEach(carga => {
+            console.log(carga);
             const recursoId = carga.idResource;
             const rolId = recursos.find((r) => r.id === recursoId).rolId;
             const nombreRecurso = recursosMap[recursoId];
@@ -61,15 +65,23 @@ const PaginaProyecto = () => {
             const mes = fecha.getMonth() + 1;
             const anio = fecha.getFullYear();
 
+
+
             const indexMes = mesesIndices[`${mes}-${anio}`];
+
+            console.log(mesesIndices);
             if (indexMes !== undefined) {
                 const key = `${rolId}-${mes}-${anio}`;
                 const incomeByHour = costosMap[key];
+                console.log(incomeByHour);
                 if (incomeByHour) {
                     resultado[nombreRecurso][indexMes] += carga.hours * incomeByHour;
                 }
             }
         });
+
+
+
 
         return resultado;
     };
