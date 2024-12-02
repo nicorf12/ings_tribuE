@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import {useEffect, useState} from "react";
-import { Button, Container, Form } from "react-bootstrap";
+import {Button, Container, Form, Modal} from "react-bootstrap";
 import DataGridProyectos from "./Grid/DataGridProyectos.jsx";
 import {useNavigate} from "react-router-dom";
 import {obtenerProyectos} from "../solicitudes.jsx";
@@ -11,6 +11,7 @@ const Proyectos = () => {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null)
+    const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -31,11 +32,22 @@ const Proyectos = () => {
         };
         fetchData();
     }, [])
+    const cancelDelete = () => {
+        setShowModal(false);
+    };
 
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        navigate("/lider/proyecto", {state: project})
+    const handleSubmit = (e) => {
+        if(project === null) {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowModal(true);
+        }
+        else{
+            e.preventDefault();
+            navigate("/lider/proyecto", {state: project})
+        }
+
     };
 
 
@@ -58,6 +70,19 @@ const Proyectos = () => {
                         Confirmar
                     </Button>
                 </Form>
+                <Modal show={showModal} onHide={cancelDelete} >
+                    <Modal.Header >
+                        <Modal.Title>Alerta</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        No has seleccionado ningun projecto.
+                    </Modal.Body>
+                    <Modal.Footer onHide={cancelDelete}>
+                        <Button variant="secondary" onClick={cancelDelete} >
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
             <DataGridProyectos proyectos={projects} loading={loading} error={error}/>
         </Container>
