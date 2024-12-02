@@ -86,8 +86,8 @@ const PaginaProyecto = () => {
 
             for (let month = startM; month <= endM; month++) {
                 const mes = new Date(year, month).toLocaleString('default', { month: 'long' });
-                const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1); // Capitalizar primera letra
-                mesesArray.push(`${mesCapitalizado} ${year}`); // Formato: MES - AÑO
+                const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
+                mesesArray.push(`${mesCapitalizado} ${year}`);
             }
         }
         console.log("Meses array", mesesArray);
