@@ -8,7 +8,7 @@ import {useLocation} from "react-router-dom";
 
 import {Box} from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
-import {errorRed, loadingGray, successGreen} from "../utils/constants.js";
+import {errorRed, loadingGray, recursoIdDesarrollador, successGreen} from "../utils/constants.js";
 
 const PaginaPrincipalDesarrollador = () => {
     const location = useLocation();
@@ -66,7 +66,7 @@ const PaginaPrincipalDesarrollador = () => {
             <div className="">
                 <h2 className="text-center m-3 ">Calendario de Tareas</h2>
                 <CalendarioNavegable carga={carga} setFecha={setFecha} setDeletion={setDeletion} setError={setError} setLoading={setLoading}/>
-                <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion} recurso={{id: "ff14a491-e26d-4092-86ea-d76f20c165d1"}}/>
+                <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion} recurso={{id: recursoIdDesarrollador}}/>
                 <Snackbar
                     open={additionNotif}
                     autoHideDuration={4000}

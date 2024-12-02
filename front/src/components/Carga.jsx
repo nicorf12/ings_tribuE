@@ -2,14 +2,20 @@ import { useState, useEffect } from 'react';
 import {Container, Form, Button, Modal} from "react-bootstrap";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { obtenerTareas, obtenerProyectos,  modificarCarga, agregarCarga } from "../solicitudes.jsx";
+import {
+    obtenerTareas,
+    obtenerProyectos,
+    modificarCarga,
+    agregarCarga,
+    obtenerCargasEnPeriodo
+} from "../solicitudes.jsx";
 import { useNavigate } from 'react-router-dom';
 
 
 import DatePickerExclude from "./DatePicker/DatePickerExclude.jsx";
 import Snackbar from "@mui/material/Snackbar";
 import {Box} from "@mui/material";
-import {defaultErrorMessage, errorRed, loadingGray, successGreen} from "../utils/constants.js";
+import {defaultErrorMessage, errorRed, loadingGray, recursoIdDesarrollador, successGreen} from "../utils/constants.js";
 
 
 
@@ -164,7 +170,7 @@ const Carga = ({editar,carga}) => {
     };
 
     // Validacion de formulario
-    const checkForm = () => {
+    const checkForm = (cargas) => {
         if (!editar) {
             if (project == null) {
                 return "Por favor selecciona un proyecto";
@@ -179,8 +185,10 @@ const Carga = ({editar,carga}) => {
         if (parseInt(hours) <= 0) {
             return "Las horas deben ser mayor a 0";
         }
-        if (parseInt(hours) > 24) {
-            return "Las horas no pueden ser mayor a 24";
+
+        const totalHoras = obtenerTotalHoras(cargas)
+        if (totalHoras + parseInt(hours) > 24) {
+            return `Ya hay ${totalHoras} horas cargadas en esta fecha, y estas intentando cargar ${hours} más, el total de horas cargadas en una fecha no puede ser mayor a 24`;
         }
         return null;
     }
@@ -191,17 +199,27 @@ const Carga = ({editar,carga}) => {
             return;
         }
         e.preventDefault();
+        setLoading(true);
+        let cargas;
+        try {
+            cargas = await obtenerCargasEnPeriodo(formatDate(fecha_elegida), formatDate(fecha_elegida), recursoIdDesarrollador)
+        } catch (e) {
+            setError(e);
+        }finally {
+            setLoading(false);
+        }
+        cargas = cargas.filter((c) => c.id !== carga.id);
 
-        let errorMessage = checkForm()
+        let errorMessage = checkForm(cargas)
         if (errorMessage !== null) {
             setShowInvalidValueAlert(errorMessage);
+            setLoading(false)
             return;
         }
         const request = {
             hours: parseInt(hours),
             date: formatDate(fecha.props.date)
         }
-        setLoading(true);
         try {
             await modificarCarga(carga, request);
             sessionStorage.setItem('ignoreState', "false");
@@ -215,16 +233,31 @@ const Carga = ({editar,carga}) => {
 
     // Se encarga de subir la carga nueva
     const handleSubmit = async (e) => {
+        if (loading) {
+            return;
+        }
+
         e.preventDefault();
-        let errorMessage = checkForm()
+
+        setLoading(true);
+        let cargas;
+        try {
+            cargas = await obtenerCargasEnPeriodo(formatDate(fecha_elegida), formatDate(fecha_elegida), recursoIdDesarrollador)
+        } catch (e) {
+            setError(e);
+            return;
+        } finally {
+            setLoading(false);
+        }
+        let errorMessage = checkForm(cargas);
+
         if (errorMessage !== null) {
             setShowInvalidValueAlert(errorMessage);
-
             return;
         }
 
         const request = {
-            idResource: "ff14a491-e26d-4092-86ea-d76f20c165d1",
+            idResource: recursoIdDesarrollador,
             idTask: task.id,
             hours: parseInt(hours),
             date: formatDate(fecha.props.date)
@@ -379,6 +412,14 @@ const getTasksInProject = (tareas, projectId) => {
         }
     })
     return result;
+}
+
+const obtenerTotalHoras = (cargas) => {
+    let result = 0;
+    cargas.forEach((carga) => {
+        result += carga.hours;
+    })
+    return result
 }
 
 export default Carga;

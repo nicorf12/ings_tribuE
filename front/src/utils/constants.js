@@ -45,5 +45,6 @@ export const errorRed = "#FF4C4C";
 export const successGreen = "#4caf50";
 export const defaultErrorMessage = "Ocurrió un error. Vuelve a intentarlo más tarde.";
 export const defaultLoadingMessage = "Cargando...";
+export const recursoIdDesarrollador = "ff14a491-e26d-4092-86ea-d76f20c165d1"
 
 export default { colorPalette, errorRed, successGreen, loadingGray, defaultErrorMessage, defaultLoadingMessage}
