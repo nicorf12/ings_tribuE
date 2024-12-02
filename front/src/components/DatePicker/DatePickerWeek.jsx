@@ -3,7 +3,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from "react";
 import {FaAngleLeft, FaAngleRight, FaPencilAlt} from "react-icons/fa";
 
-const DatePickerExclude = ({ date ,setFecha}) => {
+const DatePickerWeek = ({ date ,setFecha}) => {
     const [startDate, setStartDate] = useState(new Date());
 
     useEffect(() => {
@@ -72,5 +72,5 @@ const DatePickerExclude = ({ date ,setFecha}) => {
     );
 };
 
-export default DatePickerExclude;
+export default DatePickerWeek;
 

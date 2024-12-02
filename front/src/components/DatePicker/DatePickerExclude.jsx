@@ -23,36 +23,28 @@ const DatePickerExclude = ({ date ,setFecha,excludeDates}) => {
   }, [date]);
 
 
-  const excludeDatesFilter = () => {
+  const excludeDatesFilter = (date) => {
     const today = new Date();
     const dayOfWeek = today.getDay();
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - dayOfWeek);
-
+    startOfWeek.setDate(today.getDate() - dayOfWeek - 1);
     const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    return date < startOfWeek || date > today || date > endOfWeek;
 
-    for(let i = 0; i < 6; i++) {
-      if(endOfWeek < today) {
-        endOfWeek.setDate(startOfWeek.getDate() + i);
-      }
-    }
-    return (date) => {
-      return date < startOfWeek || date > endOfWeek;
-    };
   };
 
   // Devuelve true si la fecha es mañana o en adelante
   const isDateExcluded = (date) => {
 
-    if(excludeDates === true){
-      return excludeDatesFilter();
-    }
-    else{
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() );
+    if (excludeDates === true){
+      return excludeDatesFilter(date);
+    } else {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate());
 
-    return date >= tomorrow;
+      return date >= tomorrow;
     }
   };
 

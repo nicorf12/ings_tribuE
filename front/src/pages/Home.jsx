@@ -60,7 +60,8 @@ const Home = () => {
             <div style={containerStyle}>
                 <h3 style={titleStyle}>{header.title}</h3>
                 {redirectButton('Desarrollador', '/dev')}
-                {redirectButton('Lider', '/lider')}
+                {redirectButton('Lider Proyectos', '/lider')}
+                {redirectButton('Lider Calendario', '/lider/calendario')}
                 {redirectButton('Costo de Proyectos', '/costos/proyectos')}
                 {redirectButton('Costo de Roles', '/costos/roles')}
             </div>
