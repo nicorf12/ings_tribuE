@@ -7,17 +7,18 @@ import {obtenerCostos, obtenerCargas, obtenerRecursos, obtenerTareas} from "../s
 
 const PaginaProyecto = () => {
     const [costos, setCostos] = useState([]);
-    const [proyecto, setProyecto] = useState(null);
     const [meses, setMeses] = useState(null);
-
     const [endDate, setEndDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));  // Hace un año
-
     const location = useLocation();
 
     const [cargas, setCargas] = useState([]);
     const [tareas, setTareas] = useState([]);
     const [recursos, setRecursos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const proyecto = location.state ? location.state : null;
 
     const agruparPorRecurso = (costos, cargas, recursos, meses) => {
         const mesesMap = {
@@ -31,11 +32,12 @@ const PaginaProyecto = () => {
         });
 
         const costosMap = {};
-        costos.forEach(costo => {
-            const key = `${costo.role.id}-${costo.month}-${costo.year}`;
-            costosMap[key] = costo.incomeByHour;
-        });
-
+        for (let costoAux of costos) {
+            costoAux.forEach(costo => {
+                const key = `${costo.role.id}-${costo.month}-${costo.year}`;
+                costosMap[key] = costo.incomeByHour;
+            });
+        }
         const mesesIndices = {};
         meses.forEach((mesAnio, index) => {
             const [mes, anio] = mesAnio.split(' ');
@@ -43,9 +45,10 @@ const PaginaProyecto = () => {
             mesesIndices[`${mesNumero}-${anio}`] = index;
         });
 
-        console.log(mesesIndices);
+
 
         const resultado = {};
+
         Object.values(recursosMap).forEach(nombre => {
             resultado[nombre] = Array(meses.length).fill(0);
         });
@@ -62,8 +65,6 @@ const PaginaProyecto = () => {
             if (indexMes !== undefined) {
                 const key = `${rolId}-${mes}-${anio}`;
                 const incomeByHour = costosMap[key];
-                console.log(costosMap);
-                console.log(key);
                 if (incomeByHour) {
                     resultado[nombreRecurso][indexMes] += carga.hours * incomeByHour;
                 }
@@ -85,36 +86,61 @@ const PaginaProyecto = () => {
             const endM = year === endYear ? endMonth : 11;
 
             for (let month = startM; month <= endM; month++) {
-                mesesArray.push(new Date(year, month).toLocaleString('default', {month: 'long', year: 'numeric'}));
+                const mes = new Date(year, month).toLocaleString('default', { month: 'long' });
+                const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
+                mesesArray.push(`${mesCapitalizado} ${year}`);
             }
-
         }
         return mesesArray;
-    }
+    };
 
     useEffect(() => {
-        let cargas_aux;
-        let recursos_aux;
-        let tareas_aux;
+        const mesesCalculados = calcularMeses();
+        setMeses(mesesCalculados);
         const f = async () => {
-            cargas_aux = await obtenerCargas();
-            recursos_aux = await obtenerRecursos();
-            tareas_aux = await obtenerTareas();
-            setCargas(cargas_aux)
-            setRecursos(recursos_aux)
-            setTareas(tareas_aux)
+            setLoading(true);
+            try {
+                const cargas_aux = await obtenerCargas();
+                const recursos_aux = await obtenerRecursos();
+                const tareas_aux = await obtenerTareas();
+                setCargas(cargas_aux);
+                setRecursos(recursos_aux);
+                setTareas(tareas_aux);
+            } catch (e) {
+                console.error(e)
+                setError(e)
+            } finally {
+                setLoading(false)
+            }
         }
         f();
-        const mesesCalculados = calcularMeses()
-        setMeses(mesesCalculados);
-    }, [])
+    }, []);
+
 
     useEffect(() => {
-        const proyecto_aux = location.state;
-        if (proyecto_aux) {
-            setProyecto(proyecto_aux);
+        if (tareas.length === 0) {
+            return;
         }
-    }, [location.state]);
+        setLoading(true);
+        const f = async () => {
+            const arrAnios = [];
+            arrAnios.push(startDate.getFullYear());
+            arrAnios.push(endDate.getFullYear());
+            try {
+                const costosAux = await obtenerCostos(arrAnios);
+                const costosPorRecurso = agruparPorRecurso(costosAux, filtrarPorProyecto(cargas, tareas, proyecto?.id), recursos, meses);
+                setCostos(costosPorRecurso);
+            } catch (e) {
+                console.error(e)
+                setError(e)
+            } finally {
+                setLoading(false)
+            }
+        }
+        f();
+    }, [meses, tareas])
+
+
 
     const handleConfirmarNuevaBusqueda = () => {
         if (startDate == null || endDate == null) {
@@ -129,10 +155,13 @@ const PaginaProyecto = () => {
         const mesesCalculados = calcularMeses();
         setMeses(mesesCalculados);
 
+        //const arrAnios = [];
+        //arrAnios.push(startDate.getFullYear());
+        //arrAnios.push(endDate.getFullYear());
 
-        console.log(filtrarPorProyecto(cargas,tareas, proyecto.id));
-        let costosPorRecurso = agruparPorRecurso(obtenerCostos(),filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
-        setCostos(costosPorRecurso);
+
+        //let costosPorRecurso = agruparPorRecurso(costos,filtrarPorProyecto(cargas,tareas, proyecto.id),recursos,mesesCalculados);
+        //setCostos(costosPorRecurso);
 };
 
 return (
@@ -146,7 +175,7 @@ return (
         setStartDate={setStartDate}
         setEndDate={setEndDate}
     />
-    <DataGridCostos costos={costos} meses={meses} />
+    <DataGridCostos costos={costos} meses={meses} loading={loading} error={error}/>
 </>
 );
 };

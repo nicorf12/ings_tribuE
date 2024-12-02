@@ -8,25 +8,22 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from "react-bootstrap/Container";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {defaultErrorMessage, defaultLoadingMessage} from "../../utils/constants.js";
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2', // Azul principal
+            main: '#1976d2',
         },
         secondary: {
-            main: '#e3f2fd', // Fondo azul claro
+            main: '#e3f2fd',
         },
     },
 });
 
-// Función para crear datos
-function createData(name, ...values) {
-    return { name, values };
-}
 
-// Componente DataGridCostos
-const DataGridCostos = ({costos ,meses}) => {
+const DataGridCostos = ({costos ,meses, loading, error}) => {
+
     return (
         <ThemeProvider theme={theme}>
             <Container>
@@ -57,10 +54,35 @@ const DataGridCostos = ({costos ,meses}) => {
                                     align="center"
                                     sx={{ backgroundColor: '#1976d2', color: 'white', textAlign: 'center' }}
                                 >
-                                    Total (g)
+                                    Total
                                 </TableCell>
                             </TableRow>
                         </TableHead>
+                        {loading ? (
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={meses ? meses.length + 2 : 2}
+                                        align="center"
+                                        sx={{ color: 'text.primary', textAlign: 'center' }}
+                                    >
+                                        {defaultLoadingMessage}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        ) : error ? (
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={meses ? meses.length + 2 : 2}
+                                        align="center"
+                                        sx={{ color: 'text.primary', textAlign: 'center' }}
+                                    >
+                                        {defaultErrorMessage}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        ) : (
                         <TableBody>
                             {Object.keys(costos).map((key, rowIndex) => (
                                 <TableRow
@@ -82,23 +104,25 @@ const DataGridCostos = ({costos ,meses}) => {
                                             align="center"
                                             sx={{ color: 'text.primary', textAlign: 'center' }}
                                         >
-                                            {value}
+                                            $ {value}
                                         </TableCell>
                                     ))}
                                     <TableCell
                                         align="center"
                                         sx={{ color: 'text.primary', textAlign: 'center' }}
                                     >
-                                        {costos[key].reduce((a, b) => a + b, 0)}
+                                       $ {costos[key].reduce((a, b) => a + b, 0)}
                                     </TableCell>
                                 </TableRow>
                             ))}
-                        </TableBody>
+                        </TableBody>)}
                     </Table>
                 </TableContainer>
             </Container>
         </ThemeProvider>
     );
 };
+
+
 
 export default DataGridCostos;

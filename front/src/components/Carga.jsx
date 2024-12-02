@@ -2,13 +2,20 @@ import { useState, useEffect } from 'react';
 import {Container, Form, Button, Modal} from "react-bootstrap";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { obtenerTareas, obtenerProyectos, obtenerCargas, modificarCarga, agregarCarga } from "../solicitudes.jsx";
+import { obtenerTareas, obtenerProyectos,  modificarCarga, agregarCarga } from "../solicitudes.jsx";
 import { useNavigate } from 'react-router-dom';
 
 
 import DatePickerExclude from "./DatePicker/DatePickerExclude.jsx";
 import Snackbar from "@mui/material/Snackbar";
 import {Box} from "@mui/material";
+import {defaultErrorMessage, errorRed, loadingGray, successGreen} from "../utils/constants.js";
+
+
+
+
+
+
 const Carga = ({editar,carga}) => {
     const [project, setProject] = useState(null);
     const [task, setTask] = useState(null);
@@ -25,30 +32,26 @@ const Carga = ({editar,carga}) => {
     let fecha;
 
     const [fecha_elegida , setFecha] = useState(new Date());
+    const [excludeFilter] = useState(true);
 
 
-    useEffect(() => {
-
-    }, [error])
-
-
+    // Fetchea proyectos y tareas al inicializar
     useEffect(() => {
         const fetchData = async () => {
-            let projects_aux;
-            let tareas_aux;
             try {
-                projects_aux = await obtenerProyectos();
-                tareas_aux = await obtenerTareas();
+                let projects_aux = await obtenerProyectos();
+                let tareas_aux = await obtenerTareas();
+                setProjects(getProjectSelectList(projects_aux));
+                setTasks(getTasksSelectMap(projects_aux, tareas_aux));
             } catch (e) {
                 setError(e);
             }
 
-            setProjects(getProjectSelectList(projects_aux));
-            setTasks(getTasksSelectMap(projects_aux, tareas_aux));
         };
         fetchData()
     }, [])
 
+    // En caso de edicion inicializa los campos
     useEffect(() => {
         if (carga != null) {
             setHours(carga.hours)
@@ -56,9 +59,9 @@ const Carga = ({editar,carga}) => {
             dateCalendar.setDate(dateCalendar.getDate() + 1);
             setFecha(dateCalendar)
         }
-
     }, [])
 
+    // En caso de edicion inicializa los campos, sino los deja en blanco
     if (editar && carga) {
         proyecto = <Autocomplete
             disabled={true}
@@ -70,7 +73,7 @@ const Carga = ({editar,carga}) => {
                     label={carga.project}
                     InputProps={{
                         ...params.InputProps,
-                        readOnly: true,   // Hace que el campo sea solo lectura
+                        readOnly: true,
                     }}
                 />
             )}
@@ -85,8 +88,8 @@ const Carga = ({editar,carga}) => {
                     label={carga.task}
                     InputProps={{
                         ...params.InputProps,
-                        readOnly: true,   // Hace que el campo sea solo lectura
-                    }} // Deshabilitar si no hay un proyecto seleccionado
+                        readOnly: true,
+                    }}
                 />
             )}
         />
@@ -102,6 +105,8 @@ const Carga = ({editar,carga}) => {
         fecha = <DatePickerExclude
             date={fecha_elegida}
             setFecha={setFecha}
+            excludeDates ={excludeFilter}
+
         />
     }
     else {
@@ -124,7 +129,7 @@ const Carga = ({editar,carga}) => {
                 <TextField
                     {...params}
                     label="Seleccione una tarea"
-                    disabled={!project} // Deshabilitar si no hay un proyecto seleccionado
+                    disabled={!project}
                 />
             )}
         />
@@ -140,6 +145,7 @@ const Carga = ({editar,carga}) => {
         fecha = <DatePickerExclude
             date={fecha_elegida}
             setFecha={setFecha}
+            excludeDates={excludeFilter}
         />
     }
 
@@ -157,7 +163,7 @@ const Carga = ({editar,carga}) => {
         return `${year}-${month}-${day}`;
     };
 
-
+    // Validacion de formulario
     const checkForm = () => {
         if (!editar) {
             if (project == null) {
@@ -179,12 +185,17 @@ const Carga = ({editar,carga}) => {
         return null;
     }
 
+    // Se encarga de actualizar los datos en caso de edicion
     const handleSubmitUpdate = async (e) => {
+        if (loading) {
+            return;
+        }
         e.preventDefault();
 
         let errorMessage = checkForm()
         if (errorMessage !== null) {
             setShowInvalidValueAlert(errorMessage);
+            return;
         }
         const request = {
             hours: parseInt(hours),
@@ -193,6 +204,7 @@ const Carga = ({editar,carga}) => {
         setLoading(true);
         try {
             await modificarCarga(carga, request);
+            sessionStorage.setItem('ignoreState', "false");
             navigate('/dev', { state: 1 });
         } catch (e) {
             setError(e);
@@ -201,11 +213,14 @@ const Carga = ({editar,carga}) => {
         }
     };
 
+    // Se encarga de subir la carga nueva
     const handleSubmit = async (e) => {
         e.preventDefault();
         let errorMessage = checkForm()
-        if (errorMessage !== "") {
+        if (errorMessage !== null) {
             setShowInvalidValueAlert(errorMessage);
+
+            return;
         }
 
         const request = {
@@ -217,6 +232,7 @@ const Carga = ({editar,carga}) => {
         setLoading(true);
         try {
             await agregarCarga(request);
+            sessionStorage.setItem('ignoreState', "false");
             navigate('/dev', { state: 2 });
         } catch (e) {
             setError(e);
@@ -230,7 +246,7 @@ const Carga = ({editar,carga}) => {
     }
 
 
-
+    // Alerta que muestra lo que fallo al intentar subir el formulario (si alguno de los checks fallo)
     let modal = null;
     if (showInvalidValueAlert) {
         modal = <Modal show={showInvalidValueAlert} onHide={hideAlert}>
@@ -253,7 +269,6 @@ const Carga = ({editar,carga}) => {
             {modal}
             <h2 className="text-center mb-4">Carga de horas</h2>
             <Form onSubmit={editar ? handleSubmitUpdate : handleSubmit}>
-                {/* Campo Proyecto */}
                 <Form.Group
                     className="mb-3"
                     name="proyecto"
@@ -276,7 +291,6 @@ const Carga = ({editar,carga}) => {
                     Por favor elige una tarea
                 </Form.Control.Feedback>
 
-                {/* Campo Horas */}
                 <Form.Group
                     className="mb-3"
                     name="hours"
@@ -286,12 +300,10 @@ const Carga = ({editar,carga}) => {
                 </Form.Group>
 
 
-                {/* Botón Cambiar fecha*/}
                 <div className="d-flex justify-content-between align-items-center mb-3 w-100">
                     {fecha}
 
-                {/* Botón Confirmar */}
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" disabled={loading}>
                     Confirmar
                 </Button>
 
@@ -306,7 +318,7 @@ const Carga = ({editar,carga}) => {
             >
                 <Box
                     sx={{
-                        backgroundColor: "#FF4C4C",
+                        backgroundColor: errorRed,
                         color: "white",
                         padding: "8px 16px",
                         borderRadius: "4px",
@@ -314,7 +326,7 @@ const Carga = ({editar,carga}) => {
                         fontSize: "16px",
                     }}
                 >
-                    Hubo un error al eliminar la carga. Vuelve a intentarlo más tarde.
+                    Ocurrió un error al enviar el formulario. Vuelve a intentarlo más tarde.
                 </Box>
             </Snackbar>
             <Snackbar
@@ -325,7 +337,7 @@ const Carga = ({editar,carga}) => {
             >
                 <Box
                     sx={{
-                        backgroundColor: "#A6A6A6",
+                        backgroundColor: loadingGray,
                         color: "white",
                         padding: "8px 16px",
                         borderRadius: "4px",
@@ -340,6 +352,7 @@ const Carga = ({editar,carga}) => {
     );
 };
 
+// Lista de proyectos para el select (sus nombres)
 const getProjectSelectList = (projects) => {
     const result = [];
     projects.forEach((project) => {
@@ -348,6 +361,7 @@ const getProjectSelectList = (projects) => {
     return result;
 }
 
+// Mapa de tareas por proyecto para el select (sus nombres)
 const getTasksSelectMap = (projects, tareas) => {
     const result = {}
     projects.forEach((project) => {

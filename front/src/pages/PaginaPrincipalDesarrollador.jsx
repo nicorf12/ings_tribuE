@@ -8,41 +8,55 @@ import {useLocation} from "react-router-dom";
 
 import {Box} from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
+import {errorRed, loadingGray, successGreen} from "../utils/constants.js";
 
 const PaginaPrincipalDesarrollador = () => {
     const location = useLocation();
+
     const [carga, setCarga] = useState(null);
     const [fecha, setFecha] = useState(new Date());
-    const [deletion, setDeletion] = useState("");
-    const [deletionNotif, setDeletionNotif] = useState(deletion !== "");
-    const [additionNotif, setAdditionNotif] = useState(location.state ? location.state === 2 : false);
-    const [editionNotif, setEditionNotif] = useState(location.state ? location.state === 1 : false);
+    const [deletion, setDeletion] = useState(null);
+    const [deletionNotif, setDeletionNotif] = useState(deletion !== null);
+    const [additionNotif, setAdditionNotif] = useState(false);
+    const [editionNotif, setEditionNotif] = useState(false);
+
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-
+    // Manejo en caso de que se halla borrado una carga
     useEffect(() => {
         if (deletion) {
+            setDeletion(null);
             setDeletionNotif(true);
+            setCarga(null);
         }
     }, [deletion])
 
 
+    useEffect(() => {
+        if (sessionStorage.getItem('ignoreState') === "false") {
+            setAdditionNotif(location.state ? location.state === 2 : false)
+            setEditionNotif(location.state ? location.state === 1 : false)
+            sessionStorage.setItem('ignoreState', "true");
+        }
 
-    const handleAdditionNotifClose = (e) => {
+    }, [sessionStorage.getItem('ignoreState')])
+
+
+    const handleAdditionNotifClose = () => {
         setAdditionNotif(false);
     }
-    const handleEditionNotifClose = (e) => {
+    const handleEditionNotifClose = () => {
         setEditionNotif(false);
     }
-    const handleDeletionNotifClose = (e) => {
+    const handleDeletionNotifClose = () => {
         setDeletionNotif(false);
     }
 
-    const handleErrorNotifClose = (e) => {
+    const handleErrorNotifClose = () => {
         setError(null);
     }
-    const handleLoadingNotifClose = (e) => {
+    const handleLoadingNotifClose = () => {
         setLoading(false);
     }
 
@@ -52,7 +66,7 @@ const PaginaPrincipalDesarrollador = () => {
             <div className="">
                 <h2 className="text-center m-3 ">Calendario de Tareas</h2>
                 <CalendarioNavegable carga={carga} setFecha={setFecha} setDeletion={setDeletion} setError={setError} setLoading={setLoading}/>
-                <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion}/>
+                <Calendar setCarga={setCarga} fecha={fecha} setFecha={setFecha} deletion={deletion} recurso={{id: "ff14a491-e26d-4092-86ea-d76f20c165d1"}}/>
                 <Snackbar
                     open={additionNotif}
                     autoHideDuration={4000}
@@ -62,8 +76,8 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#4caf50", // Green background color
-                            color: "white", // White text
+                            backgroundColor: successGreen,
+                            color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",
                             boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
@@ -81,7 +95,7 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#4caf50", // Green background color
+                            backgroundColor: successGreen,
                             color: "white", // White text
                             padding: "8px 16px",
                             borderRadius: "4px",
@@ -100,8 +114,8 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#4caf50", // Green background color
-                            color: "white", // White text
+                            backgroundColor: successGreen,
+                            color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",
                             boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
@@ -119,8 +133,8 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#FF4C4C", // Green background color
-                            color: "white", // White text
+                            backgroundColor: errorRed,
+                            color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",
                             boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
@@ -129,7 +143,7 @@ const PaginaPrincipalDesarrollador = () => {
                     >
                         Hubo un error al eliminar la carga. Vuelve a intentarlo más tarde.
                     </Box>
-                </Snackbar>;
+                </Snackbar>
                 <Snackbar
                     open={loading}
                     autoHideDuration={10000}
@@ -138,7 +152,7 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#A6A6A6",
+                            backgroundColor: loadingGray,
                             color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",
@@ -148,7 +162,7 @@ const PaginaPrincipalDesarrollador = () => {
                     >
                         Eliminando carga...
                     </Box>
-                </Snackbar>;
+                </Snackbar>
             </div>
         </>
     )

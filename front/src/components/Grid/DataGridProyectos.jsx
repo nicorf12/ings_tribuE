@@ -8,23 +8,23 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {Link} from "react-router-dom";
+import {defaultErrorMessage, defaultLoadingMessage} from "../../utils/constants.js";
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2', // Azul principal
+            main: '#1976d2',
         },
         secondary: {
-            main: '#e3f2fd', // Fondo azul claro
+            main: '#e3f2fd',
         },
         text: {
-            primary: '#000000', // Texto negro
+            primary: '#000000',
         },
     },
 });
 
-// Componente DataGridProyectos
-const DataGridProyectos = ({ proyectos }) => {
+const DataGridProyectos = ({ proyectos, loading, error }) => {
 
     return (
         <ThemeProvider theme={theme}>
@@ -52,6 +52,27 @@ const DataGridProyectos = ({ proyectos }) => {
                             </TableCell>
                         </TableRow>
                     </TableHead>
+                    {loading ? (
+                        <TableRow>
+                            <TableCell
+                                colSpan={3}
+                                align="center"
+                                sx={{ color: 'text.primary', textAlign: 'center' }}
+                            >
+                                {defaultLoadingMessage}
+                            </TableCell>
+                        </TableRow>
+                    ) : error ? (
+                        <TableRow>
+                            <TableCell
+                                colSpan={3}
+                                align="center"
+                                sx={{ color: 'text.primary', textAlign: 'center' }}
+                            >
+                                {defaultErrorMessage}
+                            </TableCell>
+                        </TableRow>
+                    ) : (
                     <TableBody>
                         {proyectos.map((proyecto, rowIndex) => (
                             <TableRow
@@ -81,7 +102,7 @@ const DataGridProyectos = ({ proyectos }) => {
                                 </TableCell>
                             </TableRow>
                         ))}
-                    </TableBody>
+                    </TableBody>)}
                 </Table>
             </TableContainer>
         </ThemeProvider>

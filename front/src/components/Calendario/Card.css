@@ -6,7 +6,7 @@
 
 .card:hover {
     background-color: #007bff; /* Color de fondo al hacer hover */
-    color: #ffffff; /* Color del texto al hacer hover */
+
 }
 
 .card .content {
