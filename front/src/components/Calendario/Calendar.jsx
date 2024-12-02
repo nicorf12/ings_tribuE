@@ -59,6 +59,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         setTasksByDay(tasks);
     }, [cargas])
 
+
     // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
     useEffect(() => {
         const startOfWeek = new Date(fecha);
@@ -71,6 +72,9 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         }
         if (deletion) {
             setCargas(cargas.filter(carga => carga.id !== deletion.id));
+            delete cargasGuardadas[startOfWeek]
+            setCargasGuardadas(cargasGuardadas)
+            return;
         }
 
         const fetchData = async () => {

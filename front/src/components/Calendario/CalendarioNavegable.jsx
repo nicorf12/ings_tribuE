@@ -78,7 +78,7 @@ const CalendarioNavegable = ( {carga , setFecha, setDeletion, setError, setLoadi
                     <Modal.Title>Confirmar eliminación</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    ¿Estás seguro de que deseas eliminar la tarea con ID {carga.id}?
+                    ¿Estás seguro de que deseas eliminar la carga de {carga.hours} horas en la tarea "{carga.task}"?
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={cancelDelete}>
