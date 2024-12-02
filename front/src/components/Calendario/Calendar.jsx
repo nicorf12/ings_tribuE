@@ -72,6 +72,9 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         }
         if (deletion) {
             setCargas(cargas.filter(carga => carga.id !== deletion.id));
+            delete cargasGuardadas[startOfWeek]
+            setCargasGuardadas(cargasGuardadas)
+            return;
         }
 
         const fetchData = async () => {
@@ -90,7 +93,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             setCargasGuardadas(cargasGuardadas);
             setCargas(cargas_aux);
         };
-        if (cargasGuardadas.hasOwnProperty(startOfWeek) && !deletion) {
+        if (cargasGuardadas.hasOwnProperty(startOfWeek)) {
             setCargas(cargasGuardadas[startOfWeek]);
         } else {
             fetchData();
