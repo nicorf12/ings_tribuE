@@ -6,7 +6,6 @@ import "../../../index.css";
 import {obtenerTareas, obtenerProyectos, obtenerCargas, obtenerCargasEnPeriodo} from "../../solicitudes.jsx";
 import "./Card.css"
 import seedrandom from "seedrandom";
-import colorPalette, {defaultErrorMessage, defaultLoadingMessage} from "../../utils/constants.js";
 
 
 const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
@@ -20,11 +19,8 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
     const [error, setError] = useState(null);
     const [cargasGuardadas, setCargasGuardadas] = useState({})
 
-    // Para que los colores al azar de las cargas sean siempre los mismos
-    seedrandom('123', { global: true });
 
-
-    // Hace un fetch de las tareas y los proyectos
+    // Fetchear proyectos y tareas al inicializar
     useEffect(() => {
         setLoading(true);
         const fetchData = async () => {
@@ -43,8 +39,10 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         fetchData();
     }, [])
 
+    seedrandom('123', { global: true });
 
-    // Separa las cargas en dias
+
+    // Separar las cargas por dia
     useEffect(() => {
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
@@ -64,26 +62,23 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         setTasksByDay(tasks);
     }, [cargas])
 
-    // Filtra la carga que fue borrada en caso de que alguna haya sido borrada
-    useEffect(() => {
-        if (deletion) {
-            const startOfWeek = new Date(fecha);
-            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-            setCargas(cargas.filter(carga => carga.id !== deletion.id));
-            delete cargasGuardadas[startOfWeek]
-            setCargasGuardadas(cargasGuardadas)
-        }
-    }, [deletion]);
 
-    // useEffect para obtener las cargas al inicializar o cuando cambia la fecha
+    // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
     useEffect(() => {
-        if (tareas.length === 0) {
-            return;
-        }
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+        if (tareas.length === 0) {
+            return;
+        }
+        if (deletion) {
+            setCargas(cargas.filter(carga => carga.id !== deletion.id));
+            delete cargasGuardadas[startOfWeek]
+            setCargasGuardadas(cargasGuardadas)
+            return;
+        }
 
         const fetchData = async () => {
             setLoading(true);
@@ -101,18 +96,16 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             setCargasGuardadas(cargasGuardadas);
             setCargas(cargas_aux);
         };
-
-        // Para evitar fetchear cargas que ya fueron fetcheadas se leen del objeto que guarda las cargas ya fetcheadas por semana
         if (cargasGuardadas.hasOwnProperty(startOfWeek)) {
             setCargas(cargasGuardadas[startOfWeek]);
         } else {
             fetchData();
         }
-    }, [tareas, fecha]);
+    }, [tareas, deletion, fecha]);
 
 
-    // Maneja el click del usuario en una fecha para seleccionarla
     const handleSelected = (task) => {
+        console.log(deletion)
         if (deletion !== null) {
             return;
         }
@@ -150,84 +143,83 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 </thead>
                 <tbody>
                 {error ? (
-                    <tr>
-                        <td colSpan={daysOfWeek.length} className="text-center">
-                            {defaultErrorMessage}
-                            Hubo un error. Vuelve a intentarlo más tarde.
-                        </td>
-                    </tr>
-                ) :
-                loading ? (
-                    <tr>
-                        <td colSpan={daysOfWeek.length} className="text-center">
-                            {defaultLoadingMessage}
-                        </td>
-                    </tr>
-                ) : (
-                    <tr>
-
-                        {daysOfWeek.map((day, index) => (
-                            <td key={index} className={todayIndex === index ? "bg-light" : ""}>
-                                {
-                                    (tasksByDay[day] || []).map((task) => {
-                                        return (
-                                            <Card style={{backgroundColor: `${task.color}`}} key={task.id}
-                                                  className={`mb-3 shadow-sm card ${selectedTask === task.id ? 'bg-primary text-white expanded  ' : ''}`}
-                                                  onClick={() => handleSelected(task)}
-                                            >
-                                                <Card.Body style={{
-                                                    width: "100%",
-                                                    overflow: "hidden",
-                                                    height: task.hours * 80,
-                                                    display: "flex",
-                                                    flexDirection: "column",
-                                                    justifyContent: "center",
-                                                    textAlign: "center"
-                                                }}>
-                                                    <Card.Title
-                                                        className="mb-1"
-                                                        style={{
-                                                            display: "-webkit-box",
-                                                            WebkitBoxOrient: "vertical",
-                                                            overflow: "hidden",
-                                                            textOverflow: "ellipsis",
-                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,
-                                                            whiteSpace: "normal",
-                                                            width: "100%",
-                                                        }}
-                                                        title= {task.hours !== 1 ? task.project : `${task.project}\nDescripción: ${task.task}`}
-                                                    >
-                                                        {task.project}
-                                                    </Card.Title>
-                                                    {task.hours !== 1 && (
-                                                    <Card.Subtitle
-                                                        className="mb-1 text-muted"
-                                                        style={{
-                                                            display: "-webkit-box",
-                                                            WebkitBoxOrient: "vertical",
-                                                            overflow: "hidden",
-                                                            textOverflow: "ellipsis",
-                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,
-                                                            whiteSpace: "normal",
-                                                            width: "100%",
-                                                        }}
-                                                        title={task.task}
-                                                    >
-                                                        {task.task}
-                                                    </Card.Subtitle>)}
-                                                    <Card.Text
-                                                        className="mb-0"
-                                                    >
-                                                        Horas: {task.hours}
-                                                    </Card.Text>
-                                                </Card.Body>
-                                            </Card>
-                                        )
-                                    })}
+                        <tr>
+                            <td colSpan={daysOfWeek.length} className="text-center">
+                                Hubo un error. Vuelve a intentarlo más tarde.
                             </td>
-                        ))}
-                    </tr>
-                )}
+                        </tr>
+                    ) :
+                    loading ? (
+                        <tr>
+                            <td colSpan={daysOfWeek.length} className="text-center">
+                                Cargando...
+                            </td>
+                        </tr>
+                    ) : (
+                        <tr>
+
+                            {daysOfWeek.map((day, index) => (
+                                <td key={index} className={todayIndex === index ? "bg-light" : ""}>
+                                    {
+                                        (tasksByDay[day] || []).map((task) => {
+                                            return (
+                                                <Card style={{backgroundColor: `${task.color}`}} key={task.id}
+                                                      className={`mb-3 shadow-sm card ${selectedTask === task.id ? 'bg-primary text-white expanded  ' : ''}`}
+                                                      onClick={() => handleSelected(task)}
+                                                >
+                                                    <Card.Body style={{
+                                                        width: "100%",
+                                                        overflow: "hidden",
+                                                        height: task.hours * 80,
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        justifyContent: "center",
+                                                        textAlign: "center"
+                                                    }}>
+                                                        <Card.Title
+                                                            className="mb-1"
+                                                            style={{
+                                                                display: "-webkit-box",
+                                                                WebkitBoxOrient: "vertical",
+                                                                overflow: "hidden",
+                                                                textOverflow: "ellipsis",
+                                                                WebkitLineClamp: task.hours <= 2 ? 1 : 3,
+                                                                whiteSpace: "normal",
+                                                                width: "100%",
+                                                            }}
+                                                            title= {task.hours !== 1 ? task.project : `${task.project}\nDescripción: ${task.task}`}
+                                                        >
+                                                            {task.project}
+                                                        </Card.Title>
+                                                        {task.hours !== 1 && (
+                                                            <Card.Subtitle
+                                                                className="mb-1 text-muted"
+                                                                style={{
+                                                                    display: "-webkit-box",
+                                                                    WebkitBoxOrient: "vertical",
+                                                                    overflow: "hidden",
+                                                                    textOverflow: "ellipsis",
+                                                                    WebkitLineClamp: task.hours <= 2 ? 1 : 3,
+                                                                    whiteSpace: "normal",
+                                                                    width: "100%",
+                                                                }}
+                                                                title={task.task}
+                                                            >
+                                                                {task.task}
+                                                            </Card.Subtitle>)}
+                                                        <Card.Text
+                                                            className="mb-0"
+                                                        >
+                                                            Horas: {task.hours}
+                                                        </Card.Text>
+                                                    </Card.Body>
+                                                </Card>
+                                            )
+                                        })}
+                                </td>
+                            ))}
+                        </tr>
+                    )}
                 </tbody>
             </Table>
         </Container>
@@ -247,7 +239,7 @@ const formatCargas = (cargas, tareas, proyectos) => {
             color = colors[project.id];
         } else {
             do {
-                color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                color = colorPallete[Math.floor(Math.random() * colorPallete.length)];
             } while(used_colors.includes(color))
             used_colors.push(color);
             colors[project.id] = color
@@ -263,6 +255,46 @@ const formatCargas = (cargas, tareas, proyectos) => {
     });
     return cargas_formateadas;
 };
+
+const colorPallete = [
+    "#FF9999",
+    "#FFAA99",
+    "#FFBB99",
+    "#FFCC99",
+    "#FFDD99",
+    "#FFEE99",
+    "#FFFF99",
+    "#EEFF99",
+    "#DDFF99",
+    "#CCFF99",
+    "#BBFF99",
+    "#AAFF99",
+    "#99FF99",
+    "#99FFAA",
+    "#99FFBB",
+    "#99FFCC",
+    "#99FFDD",
+    "#99FFEE",
+    "#99FFFF",
+    "#99EEFF",
+    "#99DDFF",
+    "#99CCFF",
+    "#99BBFF",
+    "#99AAFF",
+    "#9999FF",
+    "#AA99FF",
+    "#BB99FF",
+    "#CC99FF",
+    "#DD99FF",
+    "#EE99FF",
+    "#FF99FF",
+    "#FF99EE",
+    "#FF99DD",
+    "#FF99CC",
+    "#FF99BB",
+    "#FF99AA",
+]
+
 
 const formatDate = (date) => {
     const year = date.getFullYear();
