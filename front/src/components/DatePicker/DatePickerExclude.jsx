@@ -14,28 +14,26 @@ const DatePickerExclude = ({ date ,setFecha,excludeDates}) => {
 
   useEffect(() => {
     const today = new Date();
-    // Asegúrate de que 'date' sea un objeto Date válido
     const parsedDate = new Date(date);
 
     // Solo establece startDate si la fecha es válida y no es futura
     if (!isNaN(parsedDate) && parsedDate <= today) {
       setStartDate(parsedDate);
     }
-    console.log(excludeDates);
   }, [date]);
 
 
   const excludeDatesFilter = () => {
     const today = new Date();
-    const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+    const dayOfWeek = today.getDay();
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - dayOfWeek); // Set to the previous Sunday
+    startOfWeek.setDate(today.getDate() - dayOfWeek);
 
     const endOfWeek = new Date(startOfWeek);
 
     for(let i = 0; i < 6; i++) {
       if(endOfWeek < today) {
-        endOfWeek.setDate(startOfWeek.getDate() + i); // Set to the next Saturday
+        endOfWeek.setDate(startOfWeek.getDate() + i);
       }
     }
     return (date) => {
@@ -43,6 +41,7 @@ const DatePickerExclude = ({ date ,setFecha,excludeDates}) => {
     };
   };
 
+  // Devuelve true si la fecha es mañana o en adelante
   const isDateExcluded = (date) => {
 
     if(excludeDates === true){
@@ -51,9 +50,8 @@ const DatePickerExclude = ({ date ,setFecha,excludeDates}) => {
     else{
     const today = new Date();
     const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() ); // Establece la fecha de mañana
+    tomorrow.setDate(today.getDate() );
 
-    // Devuelve true si la fecha es mañana o en adelante
     return date >= tomorrow;
     }
   };

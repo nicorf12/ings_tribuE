@@ -16,17 +16,15 @@ const PaginaLiderCalendario = () => {
     useEffect(() => {
         const f = async () => {
             const recursos_aux = await obtenerRecursos();
-            console.log(recurso)
             setRecursos(recursos_aux);
             if (recurso != null) {
                 const cargas_aux = await obtenerCargasDeRecurso(recurso.id);
                 setCarga(cargas_aux);
-                console.log(carga)
             }
 
         }
         f();
-    }, [recurso]); // Dependencia en location.state para ejecutar cuando cambie
+    }, [recurso]);
     return (
         <>
             <Navegador/>

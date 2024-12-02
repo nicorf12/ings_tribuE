@@ -62,8 +62,6 @@ const PaginaProyecto = () => {
             if (indexMes !== undefined) {
                 const key = `${rolId}-${mes}-${anio}`;
                 const incomeByHour = costosMap[key];
-                console.log(costosMap);
-                console.log(key);
                 if (incomeByHour) {
                     resultado[nombreRecurso][indexMes] += carga.hours * incomeByHour;
                 }
@@ -90,7 +88,6 @@ const PaginaProyecto = () => {
                 mesesArray.push(`${mesCapitalizado} ${year}`);
             }
         }
-        console.log("Meses array", mesesArray);
         return mesesArray;
     };
 
@@ -107,7 +104,7 @@ const PaginaProyecto = () => {
 
         }
         f();
-    }, [location.state]); // Dependencia en location.state para ejecutar cuando cambie
+    }, []);
 
 
     useEffect(() => {
@@ -132,7 +129,7 @@ const PaginaProyecto = () => {
         if (proyecto_aux) {
             setProyecto(proyecto_aux);
         }
-    }, [location.state]);
+    }, []);
 
     const handleConfirmarNuevaBusqueda = () => {
         if (startDate == null || endDate == null) {

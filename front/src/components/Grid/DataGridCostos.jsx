@@ -8,21 +8,21 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from "react-bootstrap/Container";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {defaultErrorMessage} from "../../utils/constants.js";
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2', // Azul principal
+            main: '#1976d2',
         },
         secondary: {
-            main: '#e3f2fd', // Fondo azul claro
+            main: '#e3f2fd',
         },
     },
 });
 
 
 const DataGridCostos = ({costos ,meses, loading, error}) => {
-
 
     return (
         <ThemeProvider theme={theme}>
@@ -65,7 +65,7 @@ const DataGridCostos = ({costos ,meses, loading, error}) => {
                                     align="center"
                                     sx={{ color: 'text.primary', textAlign: 'center' }}
                                 >
-                                    Cargando...
+                                    {defaultLoadingMessage}
                                 </TableCell>
                             </TableRow>
                         ) : error ? (
@@ -75,7 +75,7 @@ const DataGridCostos = ({costos ,meses, loading, error}) => {
                                     align="center"
                                     sx={{ color: 'text.primary', textAlign: 'center' }}
                                 >
-                                    Ocurrio un error. Vuelve a intentarlo más tarde.
+                                    {defaultErrorMessage}
                                 </TableCell>
                             </TableRow>
                         ) : (

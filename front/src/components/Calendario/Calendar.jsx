@@ -6,6 +6,8 @@ import "../../../index.css";
 import {obtenerTareas, obtenerProyectos, obtenerCargas, obtenerCargasEnPeriodo} from "../../solicitudes.jsx";
 import "./Card.css"
 import seedrandom from "seedrandom";
+import colorPalette, {defaultErrorMessage, defaultLoadingMessage} from "../../utils/constants.js";
+import {formatDate} from "../../utils/lib.js";
 
 
 const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
@@ -19,6 +21,11 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
     const [error, setError] = useState(null);
     const [cargasGuardadas, setCargasGuardadas] = useState({})
 
+    // Para que los colores al azar de las cargas sean siempre los mismos
+    seedrandom('123', { global: true });
+
+
+    // Hace un fetch de las tareas y los proyectos
     useEffect(() => {
         setLoading(true);
         const fetchData = async () => {
@@ -37,9 +44,8 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         fetchData();
     }, [])
 
-    seedrandom('123', { global: true });
 
-
+    // Separa las cargas en dias
     useEffect(() => {
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
@@ -59,23 +65,26 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
         setTasksByDay(tasks);
     }, [cargas])
 
-
-    // useEffect para obtener las cargas cuando la fecha cambia o al inicializar
+    // Filtra la carga que fue borrada en caso de que alguna haya sido borrada
     useEffect(() => {
+        if (deletion) {
+            const startOfWeek = new Date(fecha);
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+            setCargas(cargas.filter(carga => carga.id !== deletion.id));
+            delete cargasGuardadas[startOfWeek]
+            setCargasGuardadas(cargasGuardadas)
+        }
+    }, [deletion]);
+
+    // useEffect para obtener las cargas al inicializar o cuando cambia la fecha
+    useEffect(() => {
+        if (tareas.length === 0) {
+            return;
+        }
         const startOfWeek = new Date(fecha);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-        if (tareas.length === 0) {
-            return;
-        }
-        if (deletion) {
-            setCargas(cargas.filter(carga => carga.id !== deletion.id));
-            delete cargasGuardadas[startOfWeek]
-            setCargasGuardadas(cargasGuardadas)
-            return;
-        }
 
         const fetchData = async () => {
             setLoading(true);
@@ -93,16 +102,18 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             setCargasGuardadas(cargasGuardadas);
             setCargas(cargas_aux);
         };
+
+        // Para evitar fetchear cargas que ya fueron fetcheadas se leen del objeto que guarda las cargas ya fetcheadas por semana
         if (cargasGuardadas.hasOwnProperty(startOfWeek)) {
             setCargas(cargasGuardadas[startOfWeek]);
         } else {
             fetchData();
         }
-    }, [tareas, deletion, fecha]);
+    }, [tareas, fecha]);
 
 
+    // Maneja el click del usuario en una fecha para seleccionarla
     const handleSelected = (task) => {
-        console.log(deletion)
         if (deletion !== null) {
             return;
         }
@@ -118,7 +129,6 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
             <Table bordered hover responsive>
                 <colgroup>
                     <col style={{width: '14%'}}/>
-                    {/* All columns get the same width */}
                     <col style={{width: '14%'}}/>
                     <col style={{width: '14%'}}/>
                     <col style={{width: '14%'}}/>
@@ -143,6 +153,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 {error ? (
                     <tr>
                         <td colSpan={daysOfWeek.length} className="text-center">
+                            {defaultErrorMessage}
                             Hubo un error. Vuelve a intentarlo más tarde.
                         </td>
                     </tr>
@@ -150,7 +161,7 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                 loading ? (
                     <tr>
                         <td colSpan={daysOfWeek.length} className="text-center">
-                            Cargando...
+                            {defaultLoadingMessage}
                         </td>
                     </tr>
                 ) : (
@@ -177,12 +188,12 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                                                     <Card.Title
                                                         className="mb-1"
                                                         style={{
-                                                            display: "-webkit-box",         // Enable the multi-line truncation
-                                                            WebkitBoxOrient: "vertical",    // Stack lines vertically
-                                                            overflow: "hidden",             // Hide overflow
-                                                            textOverflow: "ellipsis",       // Add ellipsis for overflowing content
-                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,             // Limit to 1 line (you can adjust the value if you want more lines)
-                                                            whiteSpace: "normal",           // Allow wrapping to get truncated
+                                                            display: "-webkit-box",
+                                                            WebkitBoxOrient: "vertical",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis",
+                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,
+                                                            whiteSpace: "normal",
                                                             width: "100%",
                                                         }}
                                                         title= {task.hours !== 1 ? task.project : `${task.project}\nDescripción: ${task.task}`}
@@ -193,12 +204,12 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
                                                     <Card.Subtitle
                                                         className="mb-1 text-muted"
                                                         style={{
-                                                            display: "-webkit-box",         // Enable the multi-line truncation
-                                                            WebkitBoxOrient: "vertical",    // Stack lines vertically
-                                                            overflow: "hidden",             // Hide overflow
-                                                            textOverflow: "ellipsis",       // Add ellipsis for overflowing content
-                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,             // Limit to 1 line (you can adjust the value if you want more lines)
-                                                            whiteSpace: "normal",           // Allow wrapping to get truncated
+                                                            display: "-webkit-box",
+                                                            WebkitBoxOrient: "vertical",
+                                                            overflow: "hidden",
+                                                            textOverflow: "ellipsis",
+                                                            WebkitLineClamp: task.hours <= 2 ? 1 : 3,
+                                                            whiteSpace: "normal",
                                                             width: "100%",
                                                         }}
                                                         title={task.task}
@@ -237,7 +248,7 @@ const formatCargas = (cargas, tareas, proyectos) => {
             color = colors[project.id];
         } else {
             do {
-                color = colorPallete[Math.floor(Math.random() * colorPallete.length)];
+                color = colorPalette[Math.floor(Math.random() * colorPallete.length)];
             } while(used_colors.includes(color))
             used_colors.push(color);
             colors[project.id] = color
@@ -253,7 +264,7 @@ const formatCargas = (cargas, tareas, proyectos) => {
     });
     return cargas_formateadas;
 };
-
+/*
 const colorPallete = [
     "#FF9999",
     "#FFAA99",
@@ -292,13 +303,13 @@ const colorPallete = [
     "#FF99BB",
     "#FF99AA",
 ]
+*/
 
-
-const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-};
+//const formatDate = (date) => {
+//    const year = date.getFullYear();
+//    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+//    const day = date.getDate().toString().padStart(2, '0');
+//    return `${year}-${month}-${day}`;
+//};
 
 export default Calendar;

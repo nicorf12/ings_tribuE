@@ -18,10 +18,10 @@ import {updateRoles} from "../../services/RolesService.js";
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2', // Azul principal
+            main: '#1976d2',
         },
         secondary: {
-            main: '#e3f2fd', // Fondo azul claro
+            main: '#e3f2fd',
         }
     },
 });

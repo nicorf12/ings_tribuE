@@ -8,6 +8,7 @@ import {useLocation} from "react-router-dom";
 
 import {Box} from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
+import {errorRed, loadingGray, successGreen} from "../utils/constants.js";
 
 const PaginaPrincipalDesarrollador = () => {
     const location = useLocation();
@@ -21,6 +22,7 @@ const PaginaPrincipalDesarrollador = () => {
     const [loading, setLoading] = useState(false);
 
 
+    // Manejo en caso de que se halla borrado una carga
     useEffect(() => {
         if (deletion) {
             setDeletion(null);
@@ -64,8 +66,8 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#4caf50", // Green background color
-                            color: "white", // White text
+                            backgroundColor: successGreen,
+                            color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",
                             boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
@@ -83,7 +85,7 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#4caf50", // Green background color
+                            backgroundColor: successGreen,
                             color: "white", // White text
                             padding: "8px 16px",
                             borderRadius: "4px",
@@ -102,8 +104,8 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#4caf50", // Green background color
-                            color: "white", // White text
+                            backgroundColor: successGreen,
+                            color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",
                             boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
@@ -121,8 +123,8 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#FF4C4C", // Green background color
-                            color: "white", // White text
+                            backgroundColor: errorRed,
+                            color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",
                             boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
@@ -140,7 +142,7 @@ const PaginaPrincipalDesarrollador = () => {
                 >
                     <Box
                         sx={{
-                            backgroundColor: "#A6A6A6",
+                            backgroundColor: loadingGray,
                             color: "white",
                             padding: "8px 16px",
                             borderRadius: "4px",

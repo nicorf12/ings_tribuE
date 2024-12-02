@@ -3,9 +3,9 @@ import Navbar from "react-bootstrap/Navbar";
 
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import {Button, Modal} from "react-bootstrap";
-import {Link, useNavigate} from "react-router-dom"; // Importa Link de react-router-dom
+import {Link} from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePickerExclude from "../DatePicker/DatePickerExclude.jsx";
+
 
 import {useState} from "react";
 import DatePickerWeek from "../DatePicker/DatePickerWeek.jsx";
@@ -13,7 +13,6 @@ import {eliminarCarga} from "../../solicitudes.jsx";
 
 
 
-// eslint-disable-next-line react/prop-types
 const CalendarioNavegable = ( {carga , setFecha, setDeletion, setError, setLoading} ) => {
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -71,6 +70,7 @@ const CalendarioNavegable = ( {carga , setFecha, setDeletion, setError, setLoadi
         </Modal>
     }
 
+    // Crea el modal que corresponde cuando el usuario clickea la opcion de borrar
     if (showModal) {
         if (carga) {
             modal = <Modal show={showModal} onHide={cancelDelete}>

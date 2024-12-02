@@ -8,22 +8,22 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {Link} from "react-router-dom";
+import {defaultErrorMessage, defaultLoadingMessage} from "../../utils/constants.js";
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2', // Azul principal
+            main: '#1976d2',
         },
         secondary: {
-            main: '#e3f2fd', // Fondo azul claro
+            main: '#e3f2fd',
         },
         text: {
-            primary: '#000000', // Texto negro
+            primary: '#000000',
         },
     },
 });
 
-// Componente DataGridProyectos
 const DataGridProyectos = ({ proyectos, loading, error }) => {
 
     return (
@@ -59,7 +59,7 @@ const DataGridProyectos = ({ proyectos, loading, error }) => {
                                 align="center"
                                 sx={{ color: 'text.primary', textAlign: 'center' }}
                             >
-                                Cargando...
+                                {defaultLoadingMessage}
                             </TableCell>
                         </TableRow>
                     ) : error ? (
@@ -69,7 +69,7 @@ const DataGridProyectos = ({ proyectos, loading, error }) => {
                                 align="center"
                                 sx={{ color: 'text.primary', textAlign: 'center' }}
                             >
-                                Ocurrio un error. Vuelve a intentarlo más tarde.
+                                {defaultErrorMessage}
                             </TableCell>
                         </TableRow>
                     ) : (
