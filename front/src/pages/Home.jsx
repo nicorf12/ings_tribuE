@@ -1,41 +1,69 @@
-import React from 'react';
+
 import Navegador from '../components/Navegador/Navegador.jsx';
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
-import {Button} from "@mui/material";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const header = {
-        title: "Bienvenido"
+        title: "Bienvenido",
     };
 
-    const redirectButton = (text, path, color = 'primary') => (
-        <Button
-            component={Link}
+    const containerStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '90vh',
+        padding: '20px',
+
+    };
+
+    const titleStyle = {
+        fontSize: '24px',
+        fontWeight: 'bold',
+        marginBottom: '20px',
+        textAlign: 'center',
+    };
+
+    const buttonStyle = {
+        display: 'block',
+        padding: '10px 20px',
+        margin: '10px 0',
+        backgroundColor: '#007bff',
+        color: '#fff',
+        textDecoration: 'none',
+        textAlign: 'center',
+        borderRadius: '8px',
+        border: '1px solid #0056b3',
+        width: '300px',
+        fontSize: '16px',
+        transition: 'all 0.3s ease',
+    };
+
+    const buttonHoverStyle = {
+        backgroundColor: '#0056b3',
+    };
+
+    const redirectButton = (text, path) => (
+        <Link
             to={path}
-            variant="contained"
-            color={color}
-            sx={{borderRadius: '8px', margin: '4px 0', border: '1px solid black', width: '300px'}}
+            style={buttonStyle}
+            onMouseEnter={(e) => Object.assign(e.target.style, buttonHoverStyle)}
+            onMouseLeave={(e) => Object.assign(e.target.style, buttonStyle)}
         >
             {text}
-        </Button>
+        </Link>
     );
 
     return (
         <>
             <Navegador />
-            <Container>
-                <div className="mt-2">
-                    <h3>{header.title}</h3>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    {redirectButton('Desarrollador', '/dev')}
-                    {redirectButton('Lider', '/lider')}
-                    {redirectButton('Costo de Proyectos', '/costos/proyectos')}
-                    {redirectButton('Costo de Roles', '/costos/roles')}
-                </div>
-            </Container>
+            <div style={containerStyle}>
+                <h3 style={titleStyle}>{header.title}</h3>
+                {redirectButton('Desarrollador', '/dev')}
+                {redirectButton('Lider', '/lider')}
+                {redirectButton('Costo de Proyectos', '/costos/proyectos')}
+                {redirectButton('Costo de Roles', '/costos/roles')}
+            </div>
         </>
     );
 };
