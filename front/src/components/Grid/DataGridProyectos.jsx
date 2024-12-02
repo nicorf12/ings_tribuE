@@ -24,7 +24,7 @@ const theme = createTheme({
 });
 
 // Componente DataGridProyectos
-const DataGridProyectos = ({ proyectos }) => {
+const DataGridProyectos = ({ proyectos, loading, error }) => {
 
     return (
         <ThemeProvider theme={theme}>
@@ -52,6 +52,27 @@ const DataGridProyectos = ({ proyectos }) => {
                             </TableCell>
                         </TableRow>
                     </TableHead>
+                    {loading ? (
+                        <TableRow>
+                            <TableCell
+                                colSpan={3}
+                                align="center"
+                                sx={{ color: 'text.primary', textAlign: 'center' }}
+                            >
+                                Cargando...
+                            </TableCell>
+                        </TableRow>
+                    ) : error ? (
+                        <TableRow>
+                            <TableCell
+                                colSpan={3}
+                                align="center"
+                                sx={{ color: 'text.primary', textAlign: 'center' }}
+                            >
+                                Ocurrio un error. Vuelve a intentarlo más tarde.
+                            </TableCell>
+                        </TableRow>
+                    ) : (
                     <TableBody>
                         {proyectos.map((proyecto, rowIndex) => (
                             <TableRow
@@ -81,7 +102,7 @@ const DataGridProyectos = ({ proyectos }) => {
                                 </TableCell>
                             </TableRow>
                         ))}
-                    </TableBody>
+                    </TableBody>)}
                 </Table>
             </TableContainer>
         </ThemeProvider>

@@ -21,11 +21,8 @@ const theme = createTheme({
 });
 
 
-const DataGridCostos = ({costos ,meses}) => {
+const DataGridCostos = ({costos ,meses, loading, error}) => {
 
-    console.log("Costos ",costos);
-
-    console.log(meses);
 
     return (
         <ThemeProvider theme={theme}>
@@ -61,6 +58,27 @@ const DataGridCostos = ({costos ,meses}) => {
                                 </TableCell>
                             </TableRow>
                         </TableHead>
+                        {loading ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={meses ? meses.length + 2 : 2}
+                                    align="center"
+                                    sx={{ color: 'text.primary', textAlign: 'center' }}
+                                >
+                                    Cargando...
+                                </TableCell>
+                            </TableRow>
+                        ) : error ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={meses ? meses.length + 2 : 2}
+                                    align="center"
+                                    sx={{ color: 'text.primary', textAlign: 'center' }}
+                                >
+                                    Ocurrio un error. Vuelve a intentarlo más tarde.
+                                </TableCell>
+                            </TableRow>
+                        ) : (
                         <TableBody>
                             {Object.keys(costos).map((key, rowIndex) => (
                                 <TableRow
@@ -93,7 +111,7 @@ const DataGridCostos = ({costos ,meses}) => {
                                     </TableCell>
                                 </TableRow>
                             ))}
-                        </TableBody>
+                        </TableBody>)}
                     </Table>
                 </TableContainer>
             </Container>

@@ -13,22 +13,23 @@ const Proyectos = () => {
     const navigate = useNavigate();
 
     const [project, setProject] = useState(null); // Para almacenar el proyecto seleccionado
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null)
 
 
 
     useEffect(() => {
 
         const fetchData = async () => {
-            let projects_aux
+            setLoading(true);
             try {
-                projects_aux = await obtenerProyectos();
-
+                let projects_aux = await obtenerProyectos();
+                setProjects(projects_aux);
             } catch (error) {
-                console.log("Error al obtener los proyectos:", error);
-                return;
+                setError(error)
+            } finally {
+                setLoading(false);
             }
-            setProjects(projects_aux);
-
         };
         fetchData();
     }, [])
@@ -61,7 +62,7 @@ const Proyectos = () => {
                     </Button>
                 </Form>
             </div>
-            <DataGridProyectos proyectos={projects} />
+            <DataGridProyectos proyectos={projects} loading={loading} error={error}/>
         </Container>
     );
 };

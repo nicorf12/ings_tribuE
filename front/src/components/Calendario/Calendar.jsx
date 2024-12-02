@@ -22,20 +22,17 @@ const Calendar = ({ setCarga, fecha, setFecha, deletion }) => {
     useEffect(() => {
         setLoading(true);
         const fetchData = async () => {
-            let projects_aux
-            let tareas_aux
             try {
-                projects_aux = await obtenerProyectos();
-                tareas_aux = await obtenerTareas();
+                let projects_aux = await obtenerProyectos();
+                let tareas_aux = await obtenerTareas();
+                setProjects(projects_aux);
+                setTareas(tareas_aux);
             } catch (e) {
                 setError(e)
-                setLoading(false);
                 return;
             } finally {
                 setLoading(false);
             }
-            setProjects(projects_aux);
-            setTareas(tareas_aux);
         };
         fetchData();
     }, [])
