@@ -58,6 +58,19 @@ const Proyectos = () => {
                         Confirmar
                     </Button>
                 </Form>
+                <Modal show={showModal} onHide={cancelDelete} >
+                    <Modal.Header >
+                        <Modal.Title>Alerta</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        No has seleccionado ningun proyecto.
+                    </Modal.Body>
+                    <Modal.Footer onHide={cancelDelete}>
+                        <Button variant="secondary" onClick={cancelDelete} >
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
             <DataGridProyectos proyectos={projects} loading={loading} error={error}/>
         </Container>
