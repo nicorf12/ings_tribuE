@@ -98,7 +98,7 @@ const PaginaProyecto = () => {
             const endM = year === endYear ? endMonth : 11;
 
             for (let month = startM; month <= endM; month++) {
-                const mes = new Date(year, month).toLocaleString('default', { month: 'long' });
+                const mes = new Date(year, month).toLocaleString('es-ES', { month: 'long' });
                 const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
                 mesesArray.push(`${mesCapitalizado} ${year}`);
             }
